@@ -9,6 +9,10 @@ import { RegisterTool } from "./tools/register.js";
 import { BalanceSheetTool } from "./tools/balancesheet.js";
 import { IncomeStatementTool } from "./tools/incomestatement.js";
 import { CashFlowTool } from "./tools/cashflow.js";
+import { PayeesTool } from "./tools/payees.js";
+import { DescriptionsTool } from "./tools/descriptions.js";
+import { TagsTool } from "./tools/tags.js";
+import { FilesTool } from "./tools/files.js";
 
 // Check if hledger CLI is installed
 function checkHledgerInstallation(): boolean {
@@ -38,6 +42,10 @@ const balanceSheetTool = new BalanceSheetTool(journalFilePath);
 const balanceSheetEquityTool = new BalanceSheetEquityTool(journalFilePath);
 const incomeStatementTool = new IncomeStatementTool(journalFilePath);
 const cashFlowTool = new CashFlowTool(journalFilePath);
+const payeesTool = new PayeesTool(journalFilePath);
+const descriptionsTool = new DescriptionsTool(journalFilePath);
+const tagsTool = new TagsTool(journalFilePath);
+const filesTool = new FilesTool(journalFilePath);
 
 // Create server instance
 const server = new McpServer({
@@ -140,6 +148,54 @@ server.tool(
   cashFlowTool.metadata.schema.shape,
   async (args) => {
     const result = await cashFlowTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+server.tool(
+  payeesTool.metadata.name,
+  payeesTool.metadata.description,
+  payeesTool.metadata.schema.shape,
+  async (args) => {
+    const result = await payeesTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+server.tool(
+  descriptionsTool.metadata.name,
+  descriptionsTool.metadata.description,
+  descriptionsTool.metadata.schema.shape,
+  async (args) => {
+    const result = await descriptionsTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+server.tool(
+  tagsTool.metadata.name,
+  tagsTool.metadata.description,
+  tagsTool.metadata.schema.shape,
+  async (args) => {
+    const result = await tagsTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+server.tool(
+  filesTool.metadata.name,
+  filesTool.metadata.description,
+  filesTool.metadata.schema.shape,
+  async (args) => {
+    const result = await filesTool.execute(args);
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };

@@ -7,6 +7,10 @@ import { PrintTool } from "../src/tools/print.js";
 import { RegisterTool } from "../src/tools/register.js";
 import { IncomeStatementTool } from "../src/tools/incomestatement.js";
 import { CashFlowTool } from "../src/tools/cashflow.js";
+import { PayeesTool } from "../src/tools/payees.js";
+import { DescriptionsTool } from "../src/tools/descriptions.js";
+import { TagsTool } from "../src/tools/tags.js";
+import { FilesTool } from "../src/tools/files.js";
 
 const journalPath = path.resolve("test/resources/master.journal");
 
@@ -19,6 +23,10 @@ describe("hledger MCP tools", () => {
   const balanceSheetEquityTool = new BalanceSheetEquityTool(journalPath);
   const incomeStatementTool = new IncomeStatementTool(journalPath);
   const cashFlowTool = new CashFlowTool(journalPath);
+  const payeesTool = new PayeesTool(journalPath);
+  const descriptionsTool = new DescriptionsTool(journalPath);
+  const tagsTool = new TagsTool(journalPath);
+  const filesTool = new FilesTool(journalPath);
 
   it("lists accounts", async () => {
     const result = await accountsTool.execute({ flat: true });
@@ -82,5 +90,29 @@ describe("hledger MCP tools", () => {
     const result = await cashFlowTool.execute({ outputFormat: "csv", layout: "bare" });
     expect(result.success).toBe(true);
     expect(result.metadata.command).toContain("cashflow");
+  });
+
+  it("lists payees", async () => {
+    const result = await payeesTool.execute({ outputFormat: "csv" });
+    expect(result.success).toBe(true);
+    expect(result.metadata.command).toContain("payees");
+  });
+
+  it("lists descriptions", async () => {
+    const result = await descriptionsTool.execute({ outputFormat: "csv" });
+    expect(result.success).toBe(true);
+    expect(result.metadata.command).toContain("descriptions");
+  });
+
+  it("lists tags", async () => {
+    const result = await tagsTool.execute({ outputFormat: "csv" });
+    expect(result.success).toBe(true);
+    expect(result.metadata.command).toContain("tags");
+  });
+
+  it("lists files", async () => {
+    const result = await filesTool.execute({});
+    expect(result.success).toBe(true);
+    expect(result.metadata.command).toContain("files");
   });
 });

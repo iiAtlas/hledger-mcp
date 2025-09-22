@@ -8,6 +8,10 @@ import { PrintTool } from "../src/tools/print.js";
 import { RegisterTool } from "../src/tools/register.js";
 import { IncomeStatementTool } from "../src/tools/incomestatement.js";
 import { CashFlowTool } from "../src/tools/cashflow.js";
+import { PayeesTool } from "../src/tools/payees.js";
+import { DescriptionsTool } from "../src/tools/descriptions.js";
+import { TagsTool } from "../src/tools/tags.js";
+import { FilesTool } from "../src/tools/files.js";
 
 const journalPath = "/tmp/test.journal";
 
@@ -149,5 +153,37 @@ describe("Tool argument builders", () => {
 
     const cmd = result.metadata.command;
     ["--flat", "--tree", "--drop 1", "--declared", "--layout tidy", "--no-total"].forEach(flag => expect(cmd).toContain(flag));
+  });
+
+  it("builds payees command options", async () => {
+    const tool = new PayeesTool(journalPath);
+    const result = await tool.execute({ sort: "count", query: "assets" });
+
+    const cmd = result.metadata.command;
+    expect(cmd).toContain("--sort count");
+    expect(cmd).toContain("assets");
+  });
+
+  it("builds descriptions command options", async () => {
+    const tool = new DescriptionsTool(journalPath);
+    const result = await tool.execute({ sort: "amount", query: "openai" });
+
+    const cmd = result.metadata.command;
+    expect(cmd).toContain("--sort amount");
+    expect(cmd).toContain("openai");
+  });
+
+  it("builds tags command options", async () => {
+    const tool = new TagsTool(journalPath);
+    const result = await tool.execute({ query: "project" });
+
+    expect(result.metadata.command).toContain("project");
+  });
+
+  it("builds files command options", async () => {
+    const tool = new FilesTool(journalPath);
+    const result = await tool.execute({});
+
+    expect(result.metadata.command).not.toContain("--output-format");
   });
 });
