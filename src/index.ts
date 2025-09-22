@@ -15,6 +15,7 @@ import { TagsTool } from "./tools/tags.js";
 import { FilesTool } from "./tools/files.js";
 import { StatsTool } from "./tools/stats.js";
 import { ActivityTool } from "./tools/activity.js";
+import { AddTransactionTool } from "./tools/add.js";
 
 // Check if hledger CLI is installed
 function checkHledgerInstallation(): boolean {
@@ -26,12 +27,29 @@ function checkHledgerInstallation(): boolean {
   }
 }
 
-// Get journal file path from command line arguments
-const journalFilePath = process.argv[2];
+// Parse command line arguments
+const cliArgs = process.argv.slice(2);
+let journalFilePath: string | undefined;
+let readOnlyMode = false;
+let skipBackup = false;
+
+for (const arg of cliArgs) {
+  if (arg === "--read-only") {
+    readOnlyMode = true;
+  } else if (arg === "--skip-backup") {
+    skipBackup = true;
+  } else if (!arg.startsWith("--") && !journalFilePath) {
+    journalFilePath = arg;
+  } else {
+    console.error(`Error: Unrecognized argument '${arg}'`);
+    console.error("Usage: hledger-mcp <path-to-journal-file> [--read-only] [--skip-backup]");
+    process.exit(1);
+  }
+}
 
 if (!journalFilePath) {
   console.error("Error: Journal file path is required");
-  console.error("Usage: hledger-mcp <path-to-journal-file>");
+  console.error("Usage: hledger-mcp <path-to-journal-file> [--read-only] [--skip-backup]");
   process.exit(1);
 }
 
@@ -50,6 +68,10 @@ const tagsTool = new TagsTool(journalFilePath);
 const filesTool = new FilesTool(journalFilePath);
 const statsTool = new StatsTool(journalFilePath);
 const activityTool = new ActivityTool(journalFilePath);
+const addTransactionTool = new AddTransactionTool(journalFilePath, {
+  readOnly: readOnlyMode,
+  skipBackup,
+});
 
 // Create server instance
 const server = new McpServer({
@@ -224,6 +246,18 @@ server.tool(
   activityTool.metadata.schema.shape,
   async (args) => {
     const result = await activityTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+server.tool(
+  addTransactionTool.metadata.name,
+  addTransactionTool.metadata.description,
+  addTransactionTool.metadata.schema.shape,
+  async (args) => {
+    const result = await addTransactionTool.execute(args);
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };

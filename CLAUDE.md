@@ -26,7 +26,7 @@ This is an HLedger MCP (Model Context Protocol) server implementation built with
 - **MCP Server**: Uses `@modelcontextprotocol/sdk` for Model Context Protocol implementation
 - **Transport**: StdioServerTransport for stdio-based communication
 - **Validation**: Zod library for schema validation
-- **Configuration**: Currently configured with empty resources and tools capabilities
+- **Configuration**: Configurable via CLI flags for read/write behaviour
 
 ### Server Structure
 The server is configured as:
@@ -36,3 +36,8 @@ The server is configured as:
 - Transport: Stdio-based communication
 
 The server runs on stdio and logs startup message to stderr to avoid interfering with the MCP protocol communication on stdout.
+
+### Runtime flags
+- `--read-only`: disable the add-transaction tool (all attempts return a validation error). Default: off.
+- `--skip-backup`: skip creating `.bak` files when appending to an existing journal. Default: off.
+- Journal path remains the first non-flag argument; flags can be passed before or after it.

@@ -25,6 +25,7 @@ The HLedger MCP server provides comprehensive access to HLedger's financial repo
 - **Descriptions** - Transaction description analysis
 - **Tags** - Query and analyze transaction tags
 - **Files** - Information about journal files
+- **Add Transaction** - Append new, validated journal entries with optional dry-run support
 
 ## Prerequisites
 
@@ -78,6 +79,21 @@ npx hledger-mcp /path/to/your/journal.ledger
 ```
 
 The server communicates via stdio and expects the journal file path as the first argument.
+
+#### Command line options
+
+You can toggle write behaviour with optional flags:
+
+- `--read-only` &mdash; disables the add-transaction tool entirely; all write attempts return an error.
+- `--skip-backup` &mdash; prevents the server from creating `.bak` files before appending to an existing journal.
+
+Example:
+
+```bash
+npx hledger-mcp --read-only /path/to/journal.ledger
+```
+
+Flags may appear before or after the journal path. Both options default to `false`.
 
 ## Example Queries
 
