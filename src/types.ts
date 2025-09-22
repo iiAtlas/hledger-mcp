@@ -27,9 +27,9 @@ export const FilePathSchema = z.string().min(1).refine(
 // Common hledger command options
 export const CommonOptionsSchema = z.object({
   file: FilePathSchema.optional(),
-  begin: DateSchema.optional(),
-  end: DateSchema.optional(),
-  period: PeriodSchema.optional(),
+  begin: DateSchema.nullish(),
+  end: DateSchema.nullish(),
+  period: PeriodSchema.nullish(),
   daily: z.boolean().optional(),
   weekly: z.boolean().optional(),
   monthly: z.boolean().optional(),

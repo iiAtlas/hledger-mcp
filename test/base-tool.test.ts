@@ -209,6 +209,14 @@ describe("BaseTool", () => {
       expect(cmd).toContain(flag);
     });
   });
+
+  it("omits end flag when provided as null", async () => {
+    const tool = new FullOptionsTool();
+    const result = await tool.execute({ end: null });
+
+    expect(result.success).toBe(true);
+    expect(result.metadata.command).not.toContain("--end");
+  });
 });
 
 describe("QueryableTool", () => {

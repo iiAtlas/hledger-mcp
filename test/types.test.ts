@@ -12,9 +12,10 @@ describe("types schemas", () => {
   });
 
   it("parses common options", () => {
-    const parsed = CommonOptionsSchema.parse({ monthly: true, depth: 2 });
+    const parsed = CommonOptionsSchema.parse({ monthly: true, depth: 2, end: null });
     expect(parsed.monthly).toBe(true);
     expect(parsed.depth).toBe(2);
+    expect(parsed.end).toBeNull();
   });
 });
 
