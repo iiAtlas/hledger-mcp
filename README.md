@@ -1,5 +1,7 @@
 # HLedger MCP Server
 
+![HLedger MCP Banner](images/hledger-mcp-banner.jpg)
+
 A Model Context Protocol (MCP) server that provides AI assistants with direct access to HLedger accounting data and functionality. This server enables AI applications to query account balances, generate financial reports, and analyze accounting data through a standardized protocol.
 
 ## Features
