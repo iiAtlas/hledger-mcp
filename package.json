@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && chmod 755 build/index.js"
+    "build": "tsc && chmod 755 build/index.js",
+    "debug": "npx @modelcontextprotocol/inspector hledger-cli"
   },
   "bin": {
     "hledger-mcp": "./build/index.js"
