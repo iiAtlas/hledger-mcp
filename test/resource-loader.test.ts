@@ -3,23 +3,52 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { registerJournalResources } from "../src/resource-loader.js";
 
+type ResourceServer = Parameters<typeof registerJournalResources>[0];
+type RegisterResource = ResourceServer["registerResource"];
+type RegisterResourceArgs = Parameters<RegisterResource>;
+type RegisterResourceReturn = ReturnType<RegisterResource>;
+
+interface CapturedRegistration {
+  name: RegisterResourceArgs[0];
+  uri: RegisterResourceArgs[1];
+  metadata: RegisterResourceArgs[2];
+  readCallback: RegisterResourceArgs[3];
+}
+
+const createRegisteredResource = (
+  name: RegisterResourceArgs[0],
+  readCallback: RegisterResourceArgs[3],
+): RegisterResourceReturn => ({
+  name,
+  readCallback,
+  enabled: true,
+  enable: () => {
+    /* no-op for tests */
+  },
+  disable: () => {
+    /* no-op for tests */
+  },
+  update: () => {
+    /* no-op for tests */
+  },
+  remove: () => {
+    /* no-op for tests */
+  },
+});
+
 describe("registerJournalResources", () => {
   it("registers the root journal and discovered includes", async () => {
-    const registrations: Array<{
-      name: string;
-      uri: string;
-      metadata: Record<string, unknown>;
-      readCallback: (uri: URL) => Promise<any>;
-    }> = [];
+    const registrations: CapturedRegistration[] = [];
 
-    const registerResource = jest.fn(
-      (name: string, uri: string, metadata: any, readCallback: any) => {
-        registrations.push({ name, uri, metadata, readCallback });
-        return {} as any;
-      },
-    );
+    const registerResource = jest.fn<
+      RegisterResourceReturn,
+      RegisterResourceArgs
+    >((name, uri, metadata, readCallback) => {
+      registrations.push({ name, uri, metadata, readCallback });
+      return createRegisteredResource(name, readCallback);
+    });
 
-    const mockServer = { registerResource } as any;
+    const mockServer: ResourceServer = { registerResource };
 
     const listFiles = jest.fn(async () => [
       "include.journal",
@@ -77,8 +106,13 @@ describe("registerJournalResources", () => {
   });
 
   it("logs and continues when hledger files discovery fails", async () => {
-    const registerResource = jest.fn(() => ({}) as any);
-    const mockServer = { registerResource } as any;
+    const registerResource = jest.fn<
+      RegisterResourceReturn,
+      RegisterResourceArgs
+    >((name, uri, metadata, readCallback) =>
+      createRegisteredResource(name, readCallback),
+    );
+    const mockServer: ResourceServer = { registerResource };
 
     const discoveryError = new Error("files failed");
     const listFiles = jest.fn(async () => {

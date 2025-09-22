@@ -27,7 +27,6 @@ export default tseslint.config(
         "error",
         { prefer: "type-imports", disallowTypeAnnotations: false },
       ],
-      "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-vars": [
         "error",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },

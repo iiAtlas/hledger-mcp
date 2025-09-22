@@ -9,6 +9,33 @@ export interface ToolMetadata<TSchema extends z.AnyZodObject> {
   schema: TSchema;
 }
 
+export interface ToolSuccessResponse {
+  success: true;
+  data: string;
+  metadata: {
+    command: string;
+    duration: number;
+    exitCode: number;
+  };
+}
+
+export interface ToolValidationErrorResponse {
+  success: false;
+  error: "Validation error";
+  details: Array<{ path: string; message: string }>;
+}
+
+export interface ToolFailureResponse {
+  success: false;
+  error: string;
+  message: string;
+}
+
+export type ToolResponse =
+  | ToolSuccessResponse
+  | ToolValidationErrorResponse
+  | ToolFailureResponse;
+
 export abstract class BaseTool<TSchema extends z.AnyZodObject> {
   abstract readonly metadata: ToolMetadata<TSchema>;
   protected readonly journalFilePath?: string;
@@ -20,7 +47,7 @@ export abstract class BaseTool<TSchema extends z.AnyZodObject> {
   /**
    * Execute the tool with validated input
    */
-  async execute(input: unknown): Promise<any> {
+  async execute(input: unknown): Promise<ToolResponse> {
     const validatedInput = this.metadata.schema.parse(input);
 
     try {
@@ -39,7 +66,7 @@ export abstract class BaseTool<TSchema extends z.AnyZodObject> {
   /**
    * Format successful response
    */
-  protected formatResponse(result: CommandResult): any {
+  protected formatResponse(result: CommandResult): ToolSuccessResponse {
     return {
       success: true,
       data: result.stdout,
@@ -54,7 +81,7 @@ export abstract class BaseTool<TSchema extends z.AnyZodObject> {
   /**
    * Format error response
    */
-  protected formatError(error: unknown): any {
+  protected formatError(error: unknown): ToolResponse {
     if (error instanceof z.ZodError) {
       return {
         success: false,

@@ -99,7 +99,7 @@ describe("BaseTool", () => {
   it("formats Zod errors thrown during run", async () => {
     class ZodFailTool extends TestTool {
       protected async run(): Promise<CommandResult> {
-        Schema.parse({ begin: "not-a-date" } as any);
+        Schema.parse({ begin: "not-a-date" });
         return {
           success: true,
           stdout: "",
@@ -244,10 +244,14 @@ describe("QueryableTool", () => {
         this.addQueryArgs(args, input.query);
         return args;
       }
+
+      public exposeBuildArgs(input: z.infer<typeof Schema>): string[] {
+        return this.buildArgs(input);
+      }
     }
 
     const tool = new QueryTool();
-    const args = (tool as any).buildArgs({
+    const args = tool.exposeBuildArgs({
       query: 'tag:"foo bar" status:pending',
     });
 

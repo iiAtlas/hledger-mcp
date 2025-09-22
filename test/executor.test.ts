@@ -21,11 +21,11 @@ describe("HLedgerExecutor", () => {
     killExitCode?: number | null;
   }) => {
     spawnMock.mockImplementation((_cmd, _args, opts) => {
-      const eventHandlers: Record<string, Array<(arg?: any) => void>> = {};
+      const eventHandlers: Record<string, Array<(arg?: unknown) => void>> = {};
       const stdoutHandlers: Array<(chunk: Buffer) => void> = [];
       const stderrHandlers: Array<(chunk: Buffer) => void> = [];
 
-      const child: any = {
+      const child = {
         stdout: {
           on: jest.fn((event: string, handler: (chunk: Buffer) => void) => {
             if (event === "data") stdoutHandlers.push(handler);
@@ -38,7 +38,7 @@ describe("HLedgerExecutor", () => {
             return child.stderr;
           }),
         },
-        on: jest.fn((event: string, handler: (arg?: any) => void) => {
+        on: jest.fn((event: string, handler: (arg?: unknown) => void) => {
           eventHandlers[event] ??= [];
           eventHandlers[event].push(handler);
           return child;
@@ -197,7 +197,10 @@ describe("HLedgerExecutor", () => {
     const controllerB = new AbortController();
     controllerA.abort();
 
-    const combined: AbortSignal = (Executor as any).combineSignals(
+    const { combineSignals } = Executor as unknown as {
+      combineSignals: (...signals: AbortSignal[]) => AbortSignal;
+    };
+    const combined: AbortSignal = combineSignals(
       controllerA.signal,
       controllerB.signal,
     );
@@ -208,9 +211,7 @@ describe("HLedgerExecutor", () => {
 
     expect(combined.aborted).toBe(true);
 
-    const combined2: AbortSignal = (Executor as any).combineSignals(
-      controllerB.signal,
-    );
+    const combined2: AbortSignal = combineSignals(controllerB.signal);
     let abortedLater = false;
     combined2.addEventListener("abort", () => {
       abortedLater = true;
