@@ -11,6 +11,8 @@ import { PayeesTool } from "../src/tools/payees.js";
 import { DescriptionsTool } from "../src/tools/descriptions.js";
 import { TagsTool } from "../src/tools/tags.js";
 import { FilesTool } from "../src/tools/files.js";
+import { StatsTool } from "../src/tools/stats.js";
+import { ActivityTool } from "../src/tools/activity.js";
 
 const journalPath = path.resolve("test/resources/master.journal");
 
@@ -27,6 +29,8 @@ describe("hledger MCP tools", () => {
   const descriptionsTool = new DescriptionsTool(journalPath);
   const tagsTool = new TagsTool(journalPath);
   const filesTool = new FilesTool(journalPath);
+  const statsTool = new StatsTool(journalPath);
+  const activityTool = new ActivityTool(journalPath);
 
   it("lists accounts", async () => {
     const result = await accountsTool.execute({ flat: true });
@@ -114,5 +118,17 @@ describe("hledger MCP tools", () => {
     const result = await filesTool.execute({});
     expect(result.success).toBe(true);
     expect(result.metadata.command).toContain("files");
+  });
+
+  it("shows stats", async () => {
+    const result = await statsTool.execute({});
+    expect(result.success).toBe(true);
+    expect(result.metadata.command).toContain("stats");
+  });
+
+  it("shows activity", async () => {
+    const result = await activityTool.execute({ interval: "monthly" });
+    expect(result.success).toBe(true);
+    expect(result.metadata.command).toContain("activity");
   });
 });

@@ -13,6 +13,8 @@ import { PayeesTool } from "./tools/payees.js";
 import { DescriptionsTool } from "./tools/descriptions.js";
 import { TagsTool } from "./tools/tags.js";
 import { FilesTool } from "./tools/files.js";
+import { StatsTool } from "./tools/stats.js";
+import { ActivityTool } from "./tools/activity.js";
 
 // Check if hledger CLI is installed
 function checkHledgerInstallation(): boolean {
@@ -46,6 +48,8 @@ const payeesTool = new PayeesTool(journalFilePath);
 const descriptionsTool = new DescriptionsTool(journalFilePath);
 const tagsTool = new TagsTool(journalFilePath);
 const filesTool = new FilesTool(journalFilePath);
+const statsTool = new StatsTool(journalFilePath);
+const activityTool = new ActivityTool(journalFilePath);
 
 // Create server instance
 const server = new McpServer({
@@ -196,6 +200,30 @@ server.tool(
   filesTool.metadata.schema.shape,
   async (args) => {
     const result = await filesTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+server.tool(
+  statsTool.metadata.name,
+  statsTool.metadata.description,
+  statsTool.metadata.schema.shape,
+  async (args) => {
+    const result = await statsTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+server.tool(
+  activityTool.metadata.name,
+  activityTool.metadata.description,
+  activityTool.metadata.schema.shape,
+  async (args) => {
+    const result = await activityTool.execute(args);
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };

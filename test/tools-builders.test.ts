@@ -12,6 +12,8 @@ import { PayeesTool } from "../src/tools/payees.js";
 import { DescriptionsTool } from "../src/tools/descriptions.js";
 import { TagsTool } from "../src/tools/tags.js";
 import { FilesTool } from "../src/tools/files.js";
+import { StatsTool } from "../src/tools/stats.js";
+import { ActivityTool } from "../src/tools/activity.js";
 
 const journalPath = "/tmp/test.journal";
 
@@ -185,5 +187,22 @@ describe("Tool argument builders", () => {
     const result = await tool.execute({});
 
     expect(result.metadata.command).not.toContain("--output-format");
+  });
+
+  it("builds stats command options", async () => {
+    const tool = new StatsTool(journalPath);
+    const result = await tool.execute({ summary: true });
+
+    const cmd = result.metadata.command;
+    expect(cmd).toContain("--summary");
+  });
+
+  it("builds activity command options", async () => {
+    const tool = new ActivityTool(journalPath);
+    const result = await tool.execute({ interval: "monthly", cumulative: true });
+
+    const cmd = result.metadata.command;
+    expect(cmd).toContain("--monthly");
+    expect(cmd).toContain("--cumulative");
   });
 });
