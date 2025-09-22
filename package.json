@@ -1,19 +1,7 @@
 {
-  "name": "hledger-mcp",
+  "name": "@iiatlas/hledger-mcp",
   "version": "1.0.0",
   "description": "HLedger MCP server - A Model Context Protocol bridge for HLedger accounting software",
-  "main": "index.js",
-  "scripts": {
-    "build": "tsc && chmod 755 build/index.js",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "lint": "eslint . --ext .ts",
-    "typecheck": "tsc --noEmit",
-    "format": "prettier --write .",
-    "debug": "npx @modelcontextprotocol/inspector node"
-  },
-  "bin": {
-    "hledger-mcp": "./build/index.js"
-  },
   "keywords": [
     "hledger",
     "accounting",
@@ -24,20 +12,32 @@
     "ledger",
     "plain-text-accounting"
   ],
-  "author": "",
-  "license": "GPL-3.0",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/anthropics/hledger-mcp.git"
-  },
   "homepage": "https://github.com/anthropics/hledger-mcp#readme",
   "bugs": {
     "url": "https://github.com/anthropics/hledger-mcp/issues"
   },
-  "engines": {
-    "node": ">=18.0.0"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anthropics/hledger-mcp.git"
   },
+  "license": "GPL-3.0",
+  "author": "Atlas Wegman",
   "type": "module",
+  "main": "index.js",
+  "bin": {
+    "hledger-mcp": "build/index.js"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "tsc && chmod 755 build/index.js",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "lint": "eslint . --ext .ts",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "debug": "npx @modelcontextprotocol/inspector node"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.18.1",
     "zod": "^3.25.76"
@@ -56,5 +56,8 @@
     "ts-jest": "^29.4.4",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.44.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
