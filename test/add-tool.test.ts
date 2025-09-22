@@ -3,7 +3,10 @@ import path from "node:path";
 import os from "node:os";
 import { AddTransactionTool } from "../src/tools/add.js";
 
-async function setupTempJournalDir(): Promise<{ dir: string; journalPath: string; }> {
+async function setupTempJournalDir(): Promise<{
+  dir: string;
+  journalPath: string;
+}> {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "hledger-add-"));
   const resourcesDir = path.resolve("test/resources");
   const entries = await fs.readdir(resourcesDir);
@@ -11,7 +14,9 @@ async function setupTempJournalDir(): Promise<{ dir: string; journalPath: string
   await Promise.all(
     entries
       .filter((file) => file.endsWith(".journal"))
-      .map((file) => fs.copyFile(path.join(resourcesDir, file), path.join(dir, file)))
+      .map((file) =>
+        fs.copyFile(path.join(resourcesDir, file), path.join(dir, file)),
+      ),
   );
 
   return { dir, journalPath: path.join(dir, "master.journal") };
@@ -51,7 +56,9 @@ describe("AddTransactionTool", () => {
     expect(journalContents).toContain("assets:bank:checking  -$10.00");
 
     const files = await fs.readdir(tempDir);
-    expect(files.some((file) => file.startsWith("master.journal.bak-"))).toBe(true);
+    expect(files.some((file) => file.startsWith("master.journal.bak-"))).toBe(
+      true,
+    );
   });
 
   it("supports dry run without modifying the journal", async () => {
@@ -82,10 +89,8 @@ describe("AddTransactionTool", () => {
       tool.execute({
         date: "2025-02-02",
         description: "Invalid",
-        postings: [
-          { account: "assets:bank:checking", amount: "$10" },
-        ],
-      })
+        postings: [{ account: "assets:bank:checking", amount: "$10" }],
+      }),
     ).rejects.toThrow(/At least two postings are required/);
   });
 
@@ -103,7 +108,9 @@ describe("AddTransactionTool", () => {
 
     expect(result.success).toBe(true);
     const files = await fs.readdir(tempDir);
-    expect(files.some((file) => file.startsWith("master.journal.bak-"))).toBe(false);
+    expect(files.some((file) => file.startsWith("master.journal.bak-"))).toBe(
+      false,
+    );
   });
 
   it("fails when server is in read-only mode", async () => {

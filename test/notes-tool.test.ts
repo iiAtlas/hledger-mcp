@@ -17,7 +17,11 @@ describe("NotesTool", () => {
   let executeSpy: jest.SpiedFunction<typeof HLedgerExecutor.execute>;
 
   beforeEach(() => {
-    executeSpy = jest.spyOn(HLedgerExecutor, "execute").mockImplementation(async (command, args) => mockCommandResult(command, args));
+    executeSpy = jest
+      .spyOn(HLedgerExecutor, "execute")
+      .mockImplementation(async (command, args) =>
+        mockCommandResult(command, args),
+      );
   });
 
   afterEach(() => {

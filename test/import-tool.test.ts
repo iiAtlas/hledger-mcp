@@ -3,7 +3,11 @@ import os from "node:os";
 import path from "node:path";
 import { ImportTransactionsTool } from "../src/tools/import.js";
 
-async function setupTempDir(): Promise<{ dir: string; journalPath: string; dataFile: string; }> {
+async function setupTempDir(): Promise<{
+  dir: string;
+  journalPath: string;
+  dataFile: string;
+}> {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "hledger-import-"));
   const resourcesDir = path.resolve("test/resources");
   const entries = await fs.readdir(resourcesDir);
@@ -11,7 +15,9 @@ async function setupTempDir(): Promise<{ dir: string; journalPath: string; dataF
   await Promise.all(
     entries
       .filter((file) => file.endsWith(".journal"))
-      .map((file) => fs.copyFile(path.join(resourcesDir, file), path.join(dir, file)))
+      .map((file) =>
+        fs.copyFile(path.join(resourcesDir, file), path.join(dir, file)),
+      ),
   );
 
   return {
@@ -53,7 +59,9 @@ describe("ImportTransactionsTool", () => {
     expect(updated).toEqual(original);
 
     const files = await fs.readdir(tempDir);
-    expect(files.some((file) => file.startsWith("master.journal.bak-"))).toBe(false);
+    expect(files.some((file) => file.startsWith("master.journal.bak-"))).toBe(
+      false,
+    );
   });
 
   it("imports transactions and creates a backup", async () => {
@@ -70,7 +78,9 @@ describe("ImportTransactionsTool", () => {
     expect(journalContents).toContain("Imported Transaction");
 
     const files = await fs.readdir(tempDir);
-    expect(files.some((file) => file.startsWith("master.journal.bak-"))).toBe(true);
+    expect(files.some((file) => file.startsWith("master.journal.bak-"))).toBe(
+      true,
+    );
   });
 
   it("skips backups when configured", async () => {
@@ -82,7 +92,9 @@ describe("ImportTransactionsTool", () => {
 
     expect(result.success).toBe(true);
     const files = await fs.readdir(tempDir);
-    expect(files.some((file) => file.startsWith("master.journal.bak-"))).toBe(false);
+    expect(files.some((file) => file.startsWith("master.journal.bak-"))).toBe(
+      false,
+    );
   });
 
   it("fails when running in read-only mode", async () => {

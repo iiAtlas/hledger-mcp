@@ -2,7 +2,8 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { z } from "zod";
-import { BaseTool, ToolMetadata } from "../base-tool.js";
+import type { ToolMetadata } from "../base-tool.js";
+import { BaseTool } from "../base-tool.js";
 import { HLedgerExecutor } from "../executor.js";
 import { FilePathSchema, ValidationError } from "../types.js";
 
@@ -14,7 +15,9 @@ const PostingInstructionSchema = z.object({
 const RewriteInputSchema = z.object({
   file: FilePathSchema.optional(),
   query: z.string().optional(),
-  addPostings: z.array(PostingInstructionSchema).min(1, "At least one add-posting instruction is required"),
+  addPostings: z
+    .array(PostingInstructionSchema)
+    .min(1, "At least one add-posting instruction is required"),
   diff: z.boolean().optional(),
   dryRun: z.boolean().optional(),
 });
@@ -51,10 +54,13 @@ interface HunkLine {
   content: string;
 }
 
-export class RewriteTransactionsTool extends BaseTool<typeof RewriteInputSchema> {
+export class RewriteTransactionsTool extends BaseTool<
+  typeof RewriteInputSchema
+> {
   readonly metadata: ToolMetadata<typeof RewriteInputSchema> = {
     name: "hledger_rewrite",
-    description: "Rewrite matching transactions by adding postings using hledger's rewrite command",
+    description:
+      "Rewrite matching transactions by adding postings using hledger's rewrite command",
     schema: RewriteInputSchema,
   };
 
@@ -75,7 +81,9 @@ export class RewriteTransactionsTool extends BaseTool<typeof RewriteInputSchema>
     const dryRun = input.dryRun ?? false;
 
     if (this.readOnly && !dryRun) {
-      throw new ValidationError("Rewrite operations are disabled while the server is running in read-only mode");
+      throw new ValidationError(
+        "Rewrite operations are disabled while the server is running in read-only mode",
+      );
     }
 
     const targetFile = input.file ?? this.journalFilePath;
@@ -83,13 +91,17 @@ export class RewriteTransactionsTool extends BaseTool<typeof RewriteInputSchema>
       throw new ValidationError("No journal file specified");
     }
 
-    const workspace = await this.createRewriteWorkspace(path.resolve(targetFile));
+    const workspace = await this.createRewriteWorkspace(
+      path.resolve(targetFile),
+    );
     const args = this.buildRewriteArgs(input, workspace);
 
     try {
       const rewriteResult = await HLedgerExecutor.execute("rewrite", args);
       const rawDiff = rewriteResult.stdout ?? "";
-      const normalizedDiff = rawDiff ? rawDiff.split(workspace.workspaceRoot).join(workspace.rootDir) : rawDiff;
+      const normalizedDiff = rawDiff
+        ? rawDiff.split(workspace.workspaceRoot).join(workspace.rootDir)
+        : rawDiff;
 
       if (dryRun) {
         await this.cleanupRewriteWorkspace(workspace);
@@ -127,7 +139,10 @@ export class RewriteTransactionsTool extends BaseTool<typeof RewriteInputSchema>
       const patches = this.parseUnifiedDiff(rawDiff, workspace.workspaceRoot);
       await this.applyPatchesToWorkspace(patches);
 
-      const checkResult = await HLedgerExecutor.execute("check", ["--file", workspace.targetCopy]);
+      const checkResult = await HLedgerExecutor.execute("check", [
+        "--file",
+        workspace.targetCopy,
+      ]);
 
       const changedFiles = new Set<string>();
       for (const patch of patches) {
@@ -137,8 +152,13 @@ export class RewriteTransactionsTool extends BaseTool<typeof RewriteInputSchema>
       const backupMap = await this.finalizeRewrite(workspace, changedFiles);
       await this.cleanupRewriteWorkspace(workspace);
 
-      const changedOriginalFiles = Array.from(changedFiles, (file) => workspace.copyToOriginal.get(file) ?? file);
-      const changedFilesForOutput = changedOriginalFiles.map((file) => path.relative(workspace.rootDir, file));
+      const changedOriginalFiles = Array.from(
+        changedFiles,
+        (file) => workspace.copyToOriginal.get(file) ?? file,
+      );
+      const changedFilesForOutput = changedOriginalFiles.map((file) =>
+        path.relative(workspace.rootDir, file),
+      );
       const formattedBackupMap: Record<string, string | undefined> = {};
       for (const [originalPath, backupPath] of Object.entries(backupMap)) {
         const relativeKey = path.relative(workspace.rootDir, originalPath);
@@ -155,7 +175,9 @@ export class RewriteTransactionsTool extends BaseTool<typeof RewriteInputSchema>
           backupPaths: formattedBackupMap,
           checkOutput: checkResult.stdout,
         }),
-        stderr: [rewriteResult.stderr, checkResult.stderr].filter(Boolean).join("\n"),
+        stderr: [rewriteResult.stderr, checkResult.stderr]
+          .filter(Boolean)
+          .join("\n"),
         exitCode: 0,
         command: rewriteResult.command,
         duration: rewriteResult.duration + checkResult.duration,
@@ -168,7 +190,7 @@ export class RewriteTransactionsTool extends BaseTool<typeof RewriteInputSchema>
 
   private buildRewriteArgs(
     input: z.infer<typeof RewriteInputSchema>,
-    workspace: RewriteWorkspace
+    workspace: RewriteWorkspace,
   ): string[] {
     const args: string[] = ["--file", workspace.targetCopy, "--diff"];
 
@@ -198,7 +220,7 @@ export class RewriteTransactionsTool extends BaseTool<typeof RewriteInputSchema>
       } else if (char === quoteChar && inQuotes) {
         inQuotes = false;
         quoteChar = "";
-      } else if (char === ' ' && !inQuotes) {
+      } else if (char === " " && !inQuotes) {
         if (current.trim()) {
           parts.push(current.trim());
           current = "";
@@ -215,23 +237,41 @@ export class RewriteTransactionsTool extends BaseTool<typeof RewriteInputSchema>
     return parts;
   }
 
-  private async createRewriteWorkspace(targetOriginal: string): Promise<RewriteWorkspace> {
+  private async createRewriteWorkspace(
+    targetOriginal: string,
+  ): Promise<RewriteWorkspace> {
     const originalReal = await fs.realpath(targetOriginal);
     const rootDir = path.dirname(originalReal);
-    const workspaceTemp = await fs.mkdtemp(path.join(os.tmpdir(), "hledger-rewrite-"));
+    const workspaceTemp = await fs.mkdtemp(
+      path.join(os.tmpdir(), "hledger-rewrite-"),
+    );
     const workspaceRoot = await fs.realpath(workspaceTemp);
     const fileMap = new Map<string, string>();
     const copyToOriginal = new Map<string, string>();
     const visited = new Set<string>();
 
-    await this.copyWithIncludes(originalReal, rootDir, workspaceRoot, fileMap, copyToOriginal, visited);
+    await this.copyWithIncludes(
+      originalReal,
+      rootDir,
+      workspaceRoot,
+      fileMap,
+      copyToOriginal,
+      visited,
+    );
 
     const targetCopy = fileMap.get(originalReal);
     if (!targetCopy) {
       throw new Error("Failed to prepare rewrite workspace");
     }
 
-    return { rootDir, workspaceRoot, targetOriginal: originalReal, targetCopy, fileMap, copyToOriginal };
+    return {
+      rootDir,
+      workspaceRoot,
+      targetOriginal: originalReal,
+      targetCopy,
+      fileMap,
+      copyToOriginal,
+    };
   }
 
   private async copyWithIncludes(
@@ -240,7 +280,7 @@ export class RewriteTransactionsTool extends BaseTool<typeof RewriteInputSchema>
     workspaceRoot: string,
     fileMap: Map<string, string>,
     copyToOriginal: Map<string, string>,
-    visited: Set<string>
+    visited: Set<string>,
   ): Promise<void> {
     const resolved = await fs.realpath(filePath);
     if (visited.has(resolved)) {
@@ -271,14 +311,27 @@ export class RewriteTransactionsTool extends BaseTool<typeof RewriteInputSchema>
         includeTarget = includeTarget.slice(0, semicolonIndex).trim();
       }
       includeTarget = includeTarget.replace(/^['"]|['"]$/g, "");
-      const includePaths = await this.expandIncludePaths(path.dirname(resolved), includeTarget);
+      const includePaths = await this.expandIncludePaths(
+        path.dirname(resolved),
+        includeTarget,
+      );
       for (const includePath of includePaths) {
-        await this.copyWithIncludes(includePath, rootDir, workspaceRoot, fileMap, copyToOriginal, visited);
+        await this.copyWithIncludes(
+          includePath,
+          rootDir,
+          workspaceRoot,
+          fileMap,
+          copyToOriginal,
+          visited,
+        );
       }
     }
   }
 
-  private async expandIncludePaths(baseDir: string, pattern: string): Promise<string[]> {
+  private async expandIncludePaths(
+    baseDir: string,
+    pattern: string,
+  ): Promise<string[]> {
     const hasGlob = /[*?]/.test(pattern);
     if (!hasGlob) {
       const resolved = path.resolve(baseDir, pattern);
@@ -322,7 +375,9 @@ export class RewriteTransactionsTool extends BaseTool<typeof RewriteInputSchema>
       if (line.startsWith("+++ ")) {
         const filePath = line.slice(4).trim();
         if (!filePath.startsWith(workspaceRoot)) {
-          throw new Error(`Diff references path outside workspace: ${filePath}`);
+          throw new Error(
+            `Diff references path outside workspace: ${filePath}`,
+          );
         }
         currentPatch = { filePath, hunks: [] };
         patches.push(currentPatch);
@@ -379,7 +434,8 @@ export class RewriteTransactionsTool extends BaseTool<typeof RewriteInputSchema>
         updatedLines = this.applyHunk(updatedLines, hunk);
       }
 
-      const newContent = updatedLines.join("\n") + (hasTrailingNewline ? "\n" : "");
+      const newContent =
+        updatedLines.join("\n") + (hasTrailingNewline ? "\n" : "");
       await fs.writeFile(patch.filePath, newContent, "utf8");
     }
   }
@@ -394,14 +450,18 @@ export class RewriteTransactionsTool extends BaseTool<typeof RewriteInputSchema>
       if (change.type === "context") {
         const currentLine = lines[pointer] ?? "";
         if (currentLine !== change.content) {
-          throw new Error(`Patch mismatch on context line: expected "${change.content}" got "${currentLine}"`);
+          throw new Error(
+            `Patch mismatch on context line: expected "${change.content}" got "${currentLine}"`,
+          );
         }
         result.push(currentLine);
         pointer++;
       } else if (change.type === "remove") {
         const currentLine = lines[pointer] ?? "";
         if (currentLine !== change.content) {
-          throw new Error(`Patch mismatch on removed line: expected "${change.content}" got "${currentLine}"`);
+          throw new Error(
+            `Patch mismatch on removed line: expected "${change.content}" got "${currentLine}"`,
+          );
         }
         pointer++;
       } else if (change.type === "add") {
@@ -415,7 +475,7 @@ export class RewriteTransactionsTool extends BaseTool<typeof RewriteInputSchema>
 
   private async finalizeRewrite(
     workspace: RewriteWorkspace,
-    changedFiles: Set<string>
+    changedFiles: Set<string>,
   ): Promise<Record<string, string | undefined>> {
     const backupMap: Record<string, string | undefined> = {};
     if (changedFiles.size === 0) {
@@ -444,7 +504,9 @@ export class RewriteTransactionsTool extends BaseTool<typeof RewriteInputSchema>
     return backupMap;
   }
 
-  private async cleanupRewriteWorkspace(workspace: RewriteWorkspace): Promise<void> {
+  private async cleanupRewriteWorkspace(
+    workspace: RewriteWorkspace,
+  ): Promise<void> {
     await fs.rm(workspace.workspaceRoot, { recursive: true, force: true });
   }
 

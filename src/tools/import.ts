@@ -1,18 +1,21 @@
 import path from "node:path";
 import { z } from "zod";
-import { BaseTool, ToolMetadata } from "../base-tool.js";
+import type { ToolMetadata } from "../base-tool.js";
+import { BaseTool } from "../base-tool.js";
 import { HLedgerExecutor } from "../executor.js";
+import type { JournalWorkspace } from "../journal-writer.js";
 import {
   createJournalWorkspace,
   cleanupJournalWorkspace,
   finalizeJournalWorkspace,
-  JournalWorkspace,
 } from "../journal-writer.js";
 import { FilePathSchema, ValidationError } from "../types.js";
 
 const ImportInputSchema = z.object({
   file: FilePathSchema.optional(),
-  dataFiles: z.array(FilePathSchema).nonempty("At least one data file is required"),
+  dataFiles: z
+    .array(FilePathSchema)
+    .nonempty("At least one data file is required"),
   rulesFile: FilePathSchema.optional(),
   catchup: z.boolean().optional(),
   dryRun: z.boolean().optional(),
@@ -31,7 +34,8 @@ interface ImportToolOptions {
 export class ImportTransactionsTool extends BaseTool<typeof ImportInputSchema> {
   readonly metadata: ToolMetadata<typeof ImportInputSchema> = {
     name: "hledger_import",
-    description: "Import transactions from external data files using hledger's import command",
+    description:
+      "Import transactions from external data files using hledger's import command",
     schema: ImportInputSchema,
   };
 
@@ -52,7 +56,9 @@ export class ImportTransactionsTool extends BaseTool<typeof ImportInputSchema> {
     const dryRun = input.dryRun ?? false;
 
     if (this.readOnly && !dryRun) {
-      throw new ValidationError("Import operations are disabled while the server is running in read-only mode");
+      throw new ValidationError(
+        "Import operations are disabled while the server is running in read-only mode",
+      );
     }
 
     const targetFile = input.file ?? this.journalFilePath;
@@ -82,8 +88,13 @@ export class ImportTransactionsTool extends BaseTool<typeof ImportInputSchema> {
         };
       }
 
-      const checkResult = await HLedgerExecutor.execute("check", ["--file", workspace.tempPath]);
-      const backupPath = await finalizeJournalWorkspace(workspace, { skipBackup: this.skipBackup });
+      const checkResult = await HLedgerExecutor.execute("check", [
+        "--file",
+        workspace.tempPath,
+      ]);
+      const backupPath = await finalizeJournalWorkspace(workspace, {
+        skipBackup: this.skipBackup,
+      });
 
       return {
         success: true,
@@ -95,7 +106,9 @@ export class ImportTransactionsTool extends BaseTool<typeof ImportInputSchema> {
           importOutput: importResult.stdout,
           checkOutput: checkResult.stdout,
         }),
-        stderr: [importResult.stderr, checkResult.stderr].filter(Boolean).join("\n"),
+        stderr: [importResult.stderr, checkResult.stderr]
+          .filter(Boolean)
+          .join("\n"),
         exitCode: 0,
         command: importResult.command,
         duration: importResult.duration + checkResult.duration,
@@ -108,7 +121,7 @@ export class ImportTransactionsTool extends BaseTool<typeof ImportInputSchema> {
 
   private buildImportArgs(
     input: z.infer<typeof ImportInputSchema>,
-    workspace: JournalWorkspace
+    workspace: JournalWorkspace,
   ): string[] {
     const args: string[] = ["--file", workspace.tempPath];
 

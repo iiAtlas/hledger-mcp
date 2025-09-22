@@ -1,0 +1,7 @@
+# Build artifacts
+build/
+coverage/
+node_modules/
+
+# Generated files
+package-lock.json

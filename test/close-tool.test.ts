@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { CloseTool } from "../src/tools/close.js";
 
-async function setupTempDir(): Promise<{ dir: string; journalPath: string; }> {
+async function setupTempDir(): Promise<{ dir: string; journalPath: string }> {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "hledger-close-"));
   const resourcesDir = path.resolve("test/resources");
   const entries = await fs.readdir(resourcesDir);
@@ -11,7 +11,9 @@ async function setupTempDir(): Promise<{ dir: string; journalPath: string; }> {
   await Promise.all(
     entries
       .filter((file) => file.endsWith(".journal"))
-      .map((file) => fs.copyFile(path.join(resourcesDir, file), path.join(dir, file)))
+      .map((file) =>
+        fs.copyFile(path.join(resourcesDir, file), path.join(dir, file)),
+      ),
   );
 
   return {
@@ -52,7 +54,9 @@ describe("CloseTool", () => {
 
     const payload = JSON.parse(result.data);
     expect(payload.applied).toBe(false);
-    expect(payload.generatedTransactions.toLowerCase()).toContain("retain earnings");
+    expect(payload.generatedTransactions.toLowerCase()).toContain(
+      "retain earnings",
+    );
   });
 
   it("appends closing entries and creates a backup", async () => {
@@ -70,11 +74,15 @@ describe("CloseTool", () => {
     expect(masterContents).toContain("Retain earnings 2025");
 
     const files = await fs.readdir(tempDir);
-    expect(files.some((file) => file.includes("master.journal.bak-"))).toBe(true);
+    expect(files.some((file) => file.includes("master.journal.bak-"))).toBe(
+      true,
+    );
 
     const payload = JSON.parse(result.data);
     expect(payload.applied).toBe(true);
-    expect(payload.generatedTransactions.toLowerCase()).toContain("retain earnings");
+    expect(payload.generatedTransactions.toLowerCase()).toContain(
+      "retain earnings",
+    );
   });
 
   it("skips backups when configured", async () => {
@@ -87,7 +95,9 @@ describe("CloseTool", () => {
 
     expect(result.success).toBe(true);
     const files = await fs.readdir(tempDir);
-    expect(files.some((file) => file.includes("master.journal.bak-"))).toBe(false);
+    expect(files.some((file) => file.includes("master.journal.bak-"))).toBe(
+      false,
+    );
   });
 
   it("fails when in read-only mode", async () => {

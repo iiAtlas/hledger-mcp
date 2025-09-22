@@ -9,20 +9,24 @@ This is an HLedger MCP (Model Context Protocol) server implementation built with
 ## Commands
 
 ### Building
+
 - `npm run build` - Compiles TypeScript to JavaScript and makes the output executable
 
 ### Development
+
 - Node.js version: v24.7.0 (specified in .nvmrc)
 - Use `nvm use` to set correct Node version
 
 ## Architecture
 
 ### Core Structure
+
 - **Entry Point**: `src/index.ts` - Main server implementation
 - **Output**: `build/index.js` - Compiled executable with shebang
 - **Binary**: Available as `hledger-mcp` command after build
 
 ### Key Components
+
 - **MCP Server**: Uses `@modelcontextprotocol/sdk` for Model Context Protocol implementation
 - **Transport**: StdioServerTransport for stdio-based communication
 - **Validation**: Zod library for schema validation
@@ -31,7 +35,9 @@ This is an HLedger MCP (Model Context Protocol) server implementation built with
 - **Read Tools**: new commands such as `hledger_notes` extend the reporting surface while reusing query + output-format helpers
 
 ### Server Structure
+
 The server is configured as:
+
 - Name: "hledger-mcp"
 - Version: "1.0.0"
 - Capabilities: tooling plus resource discovery (we call `hledger files` and register every reported ledger as an MCP resource before the transport connects)
@@ -40,6 +46,7 @@ The server is configured as:
 The server runs on stdio and logs startup message to stderr to avoid interfering with the MCP protocol communication on stdout.
 
 ### Runtime flags
+
 - `--read-only`: disable the add-transaction tool (all attempts return a validation error). Default: off.
 - `--skip-backup`: skip creating `.bak` files when appending to an existing journal. Default: off.
 - Journal path remains the first non-flag argument; flags can be passed before or after it.

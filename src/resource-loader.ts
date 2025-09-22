@@ -15,7 +15,10 @@ export interface RegisterJournalResourcesOptions {
 const RESOURCE_DESCRIPTION = "Journal file loaded by hledger";
 
 const defaultListFiles = async (journalFile: string): Promise<string[]> => {
-  const result = await HLedgerExecutor.execute("files", ["--file", journalFile]);
+  const result = await HLedgerExecutor.execute("files", [
+    "--file",
+    journalFile,
+  ]);
   return result.stdout
     .split(/\r?\n/)
     .map((line) => line.trim())
@@ -29,7 +32,7 @@ const defaultReadFile = async (filePath: string): Promise<string> => {
 export async function registerJournalResources(
   server: ResourceCapableServer,
   journalFilePath: string,
-  options: RegisterJournalResourcesOptions = {}
+  options: RegisterJournalResourcesOptions = {},
 ): Promise<void> {
   const listFiles = options.listFiles ?? defaultListFiles;
   const readFile = options.readFile ?? defaultReadFile;
@@ -50,7 +53,10 @@ export async function registerJournalResources(
       discoveredPaths.add(path.normalize(absolutePath));
     }
   } catch (error) {
-    logger.error?.("Failed to discover included journal files via hledger", error);
+    logger.error?.(
+      "Failed to discover included journal files via hledger",
+      error,
+    );
   }
 
   const usedNames = new Set<string>();
@@ -58,7 +64,10 @@ export async function registerJournalResources(
   for (const filePath of discoveredPaths) {
     const uri = pathToFileURL(filePath).href;
     const relative = path.relative(journalDir, filePath);
-    let name = !relative || relative.startsWith("..") ? path.basename(filePath) : relative;
+    let name =
+      !relative || relative.startsWith("..")
+        ? path.basename(filePath)
+        : relative;
     name = name.replace(/\\/g, "/");
     if (!name) {
       name = path.basename(filePath) || uri;
@@ -90,10 +99,13 @@ export async function registerJournalResources(
             ],
           };
         } catch (readError) {
-          logger.error?.(`Failed to read journal resource ${resourceUri.href}`, readError);
+          logger.error?.(
+            `Failed to read journal resource ${resourceUri.href}`,
+            readError,
+          );
           throw readError;
         }
-      }
+      },
     );
   }
 }

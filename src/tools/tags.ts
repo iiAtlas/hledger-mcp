@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { SimpleReportTool, ToolMetadata } from "../base-tool.js";
+import type { ToolMetadata } from "../base-tool.js";
+import { SimpleReportTool } from "../base-tool.js";
 import { CommonOptionsSchema } from "../types.js";
 
 const TagsInputSchema = CommonOptionsSchema.extend({

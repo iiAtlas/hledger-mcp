@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { SimpleReportTool, ToolMetadata } from "../base-tool.js";
+import type { ToolMetadata } from "../base-tool.js";
+import { SimpleReportTool } from "../base-tool.js";
 import { CommonOptionsSchema } from "../types.js";
 
 const StatsInputSchema = CommonOptionsSchema.extend({
@@ -24,7 +25,7 @@ export class StatsTool extends SimpleReportTool<typeof StatsInputSchema> {
   protected buildArgs(input: z.infer<typeof StatsInputSchema>): string[] {
     const args = this.buildCommonArgs(input);
 
-    if (input.summary) args.push('--summary');
+    if (input.summary) args.push("--summary");
 
     return args;
   }

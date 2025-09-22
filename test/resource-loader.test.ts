@@ -12,14 +12,21 @@ describe("registerJournalResources", () => {
       readCallback: (uri: URL) => Promise<any>;
     }> = [];
 
-    const registerResource = jest.fn((name: string, uri: string, metadata: any, readCallback: any) => {
-      registrations.push({ name, uri, metadata, readCallback });
-      return {} as any;
-    });
+    const registerResource = jest.fn(
+      (name: string, uri: string, metadata: any, readCallback: any) => {
+        registrations.push({ name, uri, metadata, readCallback });
+        return {} as any;
+      },
+    );
 
     const mockServer = { registerResource } as any;
 
-    const listFiles = jest.fn(async () => ["include.journal", "/external/third.journal", "", "   "]);
+    const listFiles = jest.fn(async () => [
+      "include.journal",
+      "/external/third.journal",
+      "",
+      "   ",
+    ]);
 
     const readFileCalls: string[] = [];
     const readFile = jest.fn(async (filePath: string) => {
@@ -38,7 +45,11 @@ describe("registerJournalResources", () => {
     expect(registerResource).toHaveBeenCalledTimes(3);
 
     const names = registrations.map((r) => r.name);
-    expect(names).toEqual(["master.journal", "include.journal", "third.journal"]);
+    expect(names).toEqual([
+      "master.journal",
+      "include.journal",
+      "third.journal",
+    ]);
 
     for (const registration of registrations) {
       expect(registration.metadata).toMatchObject({
@@ -66,7 +77,7 @@ describe("registerJournalResources", () => {
   });
 
   it("logs and continues when hledger files discovery fails", async () => {
-    const registerResource = jest.fn(() => ({} as any));
+    const registerResource = jest.fn(() => ({}) as any);
     const mockServer = { registerResource } as any;
 
     const discoveryError = new Error("files failed");
@@ -94,7 +105,7 @@ describe("registerJournalResources", () => {
     expect(listFiles).toHaveBeenCalledWith(rootJournal);
     expect(logger.error).toHaveBeenCalledWith(
       "Failed to discover included journal files via hledger",
-      discoveryError
+      discoveryError,
     );
     expect(registerResource).toHaveBeenCalledTimes(1);
 

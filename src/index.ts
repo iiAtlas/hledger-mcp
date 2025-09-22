@@ -27,7 +27,7 @@ function checkHledgerInstallation(): boolean {
   try {
     execSync("hledger --version", { stdio: "pipe" });
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -47,14 +47,18 @@ for (const arg of cliArgs) {
     journalFilePath = arg;
   } else {
     console.error(`Error: Unrecognized argument '${arg}'`);
-    console.error("Usage: hledger-mcp <path-to-journal-file> [--read-only] [--skip-backup]");
+    console.error(
+      "Usage: hledger-mcp <path-to-journal-file> [--read-only] [--skip-backup]",
+    );
     process.exit(1);
   }
 }
 
 if (!journalFilePath) {
   console.error("Error: Journal file path is required");
-  console.error("Usage: hledger-mcp <path-to-journal-file> [--read-only] [--skip-backup]");
+  console.error(
+    "Usage: hledger-mcp <path-to-journal-file> [--read-only] [--skip-backup]",
+  );
   process.exit(1);
 }
 
@@ -111,7 +115,7 @@ server.tool(
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
-  }
+  },
 );
 
 server.tool(
@@ -123,7 +127,7 @@ server.tool(
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
-  }
+  },
 );
 
 server.tool(
@@ -135,7 +139,7 @@ server.tool(
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
-  }
+  },
 );
 
 server.tool(
@@ -147,7 +151,7 @@ server.tool(
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
-  }
+  },
 );
 
 server.tool(
@@ -159,7 +163,7 @@ server.tool(
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
-  }
+  },
 );
 
 server.tool(
@@ -171,7 +175,7 @@ server.tool(
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
-  }
+  },
 );
 
 server.tool(
@@ -183,7 +187,7 @@ server.tool(
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
-  }
+  },
 );
 
 server.tool(
@@ -195,7 +199,7 @@ server.tool(
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
-  }
+  },
 );
 
 server.tool(
@@ -207,7 +211,7 @@ server.tool(
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
-  }
+  },
 );
 
 server.tool(
@@ -219,7 +223,7 @@ server.tool(
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
-  }
+  },
 );
 
 server.tool(
@@ -231,7 +235,7 @@ server.tool(
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
-  }
+  },
 );
 
 server.tool(
@@ -243,7 +247,7 @@ server.tool(
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
-  }
+  },
 );
 
 server.tool(
@@ -255,7 +259,7 @@ server.tool(
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
-  }
+  },
 );
 
 server.tool(
@@ -267,7 +271,7 @@ server.tool(
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
-  }
+  },
 );
 
 server.tool(
@@ -279,7 +283,7 @@ server.tool(
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
-  }
+  },
 );
 
 server.tool(
@@ -291,7 +295,7 @@ server.tool(
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
-  }
+  },
 );
 
 server.tool(
@@ -303,7 +307,7 @@ server.tool(
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
-  }
+  },
 );
 
 server.tool(
@@ -315,7 +319,7 @@ server.tool(
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
-  }
+  },
 );
 
 server.tool(
@@ -327,13 +331,15 @@ server.tool(
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
-  }
+  },
 );
 
 async function main() {
   // Check if hledger is installed before starting the server
   if (!checkHledgerInstallation()) {
-    console.error("Error: hledger CLI is not installed or not accessible in PATH");
+    console.error(
+      "Error: hledger CLI is not installed or not accessible in PATH",
+    );
     console.error("Please install hledger from https://hledger.org/");
     process.exit(1);
   }

@@ -1,4 +1,11 @@
-import { DateSchema, FilePathSchema, CommonOptionsSchema, HLedgerError, ValidationError, TimeoutError } from "../src/types.js";
+import {
+  DateSchema,
+  FilePathSchema,
+  CommonOptionsSchema,
+  HLedgerError,
+  ValidationError,
+  TimeoutError,
+} from "../src/types.js";
 
 describe("types schemas", () => {
   it("validates date formats", () => {
@@ -8,11 +15,15 @@ describe("types schemas", () => {
 
   it("validates file paths", () => {
     expect(FilePathSchema.parse("journal.hledger")).toBe("journal.hledger");
-    expect(() => FilePathSchema.parse("../secret" )).toThrow();
+    expect(() => FilePathSchema.parse("../secret")).toThrow();
   });
 
   it("parses common options", () => {
-    const parsed = CommonOptionsSchema.parse({ monthly: true, depth: 2, end: null });
+    const parsed = CommonOptionsSchema.parse({
+      monthly: true,
+      depth: 2,
+      end: null,
+    });
     expect(parsed.monthly).toBe(true);
     expect(parsed.depth).toBe(2);
     expect(parsed.end).toBeNull();

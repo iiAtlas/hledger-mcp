@@ -1,6 +1,11 @@
 import { z } from "zod";
 import { BaseTool, QueryableTool } from "../src/base-tool.js";
-import { CommandResult, DateSchema, OutputFormatSchema, CommonOptionsSchema } from "../src/types.js";
+import type { CommandResult } from "../src/types.js";
+import {
+  DateSchema,
+  OutputFormatSchema,
+  CommonOptionsSchema,
+} from "../src/types.js";
 
 const Schema = z.object({
   begin: DateSchema.optional(),
@@ -51,7 +56,9 @@ class FullOptionsTool extends BaseTool<typeof ExtendedSchema> {
     schema: ExtendedSchema,
   } as const;
 
-  protected async run(input: z.infer<typeof ExtendedSchema>): Promise<CommandResult> {
+  protected async run(
+    input: z.infer<typeof ExtendedSchema>,
+  ): Promise<CommandResult> {
     const args = this.buildCommonArgs(input);
     this.addOutputFormat(args, input.outputFormat);
     return {
@@ -205,7 +212,7 @@ describe("BaseTool", () => {
       "--pending",
       "--unmarked",
       "--output-format csv",
-    ].forEach(flag => {
+    ].forEach((flag) => {
       expect(cmd).toContain(flag);
     });
   });
@@ -240,7 +247,9 @@ describe("QueryableTool", () => {
     }
 
     const tool = new QueryTool();
-    const args = (tool as any).buildArgs({ query: "tag:\"foo bar\" status:pending" });
+    const args = (tool as any).buildArgs({
+      query: 'tag:"foo bar" status:pending',
+    });
 
     expect(args).toEqual(["tag:foo bar", "status:pending"]);
   });

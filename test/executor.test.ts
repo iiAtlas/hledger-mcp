@@ -1,5 +1,4 @@
 import { jest } from "@jest/globals";
-import { TimeoutError } from "../src/types.js";
 
 const spawnMock = jest.fn();
 
@@ -63,13 +62,19 @@ describe("HLedgerExecutor", () => {
         }
 
         if (options.stdout) {
-          stdoutHandlers.forEach((handler) => handler(Buffer.from(options.stdout ?? "")));
+          stdoutHandlers.forEach((handler) =>
+            handler(Buffer.from(options.stdout ?? "")),
+          );
         }
         if (options.stderr) {
-          stderrHandlers.forEach((handler) => handler(Buffer.from(options.stderr ?? "")));
+          stderrHandlers.forEach((handler) =>
+            handler(Buffer.from(options.stderr ?? "")),
+          );
         }
 
-        eventHandlers["close"]?.forEach((handler) => handler(options.exitCode ?? 0));
+        eventHandlers["close"]?.forEach((handler) =>
+          handler(options.exitCode ?? 0),
+        );
       });
 
       return child;
@@ -85,35 +90,47 @@ describe("HLedgerExecutor", () => {
     setupSpawnMock({ stdout: "ok", exitCode: 0 });
     const Executor = await loadExecutor();
 
-    const result = await Executor.execute("print", ["--output-format", "csv"], {});
+    const result = await Executor.execute(
+      "print",
+      ["--output-format", "csv"],
+      {},
+    );
 
     expect(result.success).toBe(true);
     expect(result.stdout).toEqual("ok");
     expect(spawnMock).toHaveBeenCalledWith(
       "hledger",
       ["print", "--output-format", "csv"],
-      expect.objectContaining({ signal: expect.any(AbortSignal) })
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
     );
   });
 
   it("rejects disallowed command", async () => {
     const Executor = await loadExecutor();
-    await expect(Executor.execute("forbidden", [])).rejects.toThrow(/not allowed/);
+    await expect(Executor.execute("forbidden", [])).rejects.toThrow(
+      /not allowed/,
+    );
   });
 
   it("rejects unsupported flag", async () => {
     const Executor = await loadExecutor();
-    await expect(Executor.execute("print", ["--unknown"])).rejects.toThrow("Flag '--unknown' is not allowed");
+    await expect(Executor.execute("print", ["--unknown"])).rejects.toThrow(
+      "Flag '--unknown' is not allowed",
+    );
   });
 
   it("rejects invalid depth shorthand", async () => {
     const Executor = await loadExecutor();
-    await expect(Executor.execute("print", ["-0"])).rejects.toThrow("Flag '-0' is not allowed");
+    await expect(Executor.execute("print", ["-0"])).rejects.toThrow(
+      "Flag '-0' is not allowed",
+    );
   });
 
   it("rejects invalid file path", async () => {
     const Executor = await loadExecutor();
-    await expect(Executor.execute("print", ["--file=../secrets.journal"])).rejects.toThrow(/Invalid file path/);
+    await expect(
+      Executor.execute("print", ["--file=../secrets.journal"]),
+    ).rejects.toThrow(/Invalid file path/);
   });
 
   it("accepts short flags", async () => {
@@ -124,7 +141,7 @@ describe("HLedgerExecutor", () => {
     expect(spawnMock).toHaveBeenCalledWith(
       "hledger",
       expect.arrayContaining(["print", "-f", "test/resources/master.journal"]),
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 
@@ -136,13 +153,15 @@ describe("HLedgerExecutor", () => {
     expect(spawnMock).toHaveBeenCalledWith(
       "hledger",
       expect.arrayContaining(["balance", "-10"]),
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 
   it("rejects arguments with null bytes", async () => {
     const Executor = await loadExecutor();
-    await expect(Executor.execute("print", ["bad\0arg"])).rejects.toThrow(/contains invalid characters/);
+    await expect(Executor.execute("print", ["bad\0arg"])).rejects.toThrow(
+      /contains invalid characters/,
+    );
   });
 
   it("handles non-zero exit as error", async () => {
@@ -178,15 +197,20 @@ describe("HLedgerExecutor", () => {
     const controllerB = new AbortController();
     controllerA.abort();
 
-    const combined: AbortSignal = (Executor as any).combineSignals(controllerA.signal, controllerB.signal);
-    let aborted = false;
+    const combined: AbortSignal = (Executor as any).combineSignals(
+      controllerA.signal,
+      controllerB.signal,
+    );
+    let _aborted = false;
     combined.addEventListener("abort", () => {
-      aborted = true;
+      _aborted = true;
     });
 
     expect(combined.aborted).toBe(true);
 
-    const combined2: AbortSignal = (Executor as any).combineSignals(controllerB.signal);
+    const combined2: AbortSignal = (Executor as any).combineSignals(
+      controllerB.signal,
+    );
     let abortedLater = false;
     combined2.addEventListener("abort", () => {
       abortedLater = true;

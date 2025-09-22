@@ -58,40 +58,67 @@ describe("hledger MCP tools", () => {
   });
 
   it("shows register entries with related postings", async () => {
-    const result = await registerTool.execute({ query: "project: demo-project", related: true, outputFormat: "csv", average: true });
+    const result = await registerTool.execute({
+      query: "project: demo-project",
+      related: true,
+      outputFormat: "csv",
+      average: true,
+    });
     expect(result.success).toBe(true);
     expect(result.data).toContain("demo-project");
     expect(result.metadata.command).toContain("--average");
   });
 
   it("prints transactions filtered by query", async () => {
-    const result = await printTool.execute({ query: "project: demo-project", outputFormat: "csv", explicit: true });
+    const result = await printTool.execute({
+      query: "project: demo-project",
+      outputFormat: "csv",
+      explicit: true,
+    });
     expect(result.success).toBe(true);
     expect(result.data).toContain("demo-project.ai");
     expect(result.metadata.command).toContain("--explicit");
   });
 
   it("produces a balance sheet summary", async () => {
-    const result = await balanceSheetTool.execute({ outputFormat: "csv", flat: true, drop: 1, declared: true, noTotal: true, layout: "wide" });
+    const result = await balanceSheetTool.execute({
+      outputFormat: "csv",
+      flat: true,
+      drop: 1,
+      declared: true,
+      noTotal: true,
+      layout: "wide",
+    });
     expect(result.success).toBe(true);
     expect(result.data).toContain("Balance Sheet");
     expect(result.metadata.command).toContain("--no-total");
   });
 
   it("produces a balance sheet with equity", async () => {
-    const result = await balanceSheetEquityTool.execute({ outputFormat: "csv", flat: true, layout: "tall" });
+    const result = await balanceSheetEquityTool.execute({
+      outputFormat: "csv",
+      flat: true,
+      layout: "tall",
+    });
     expect(result.success).toBe(true);
     expect(result.metadata.command).toContain("balancesheetequity");
   });
 
   it("produces an income statement", async () => {
-    const result = await incomeStatementTool.execute({ outputFormat: "csv", percent: true, layout: "wide" });
+    const result = await incomeStatementTool.execute({
+      outputFormat: "csv",
+      percent: true,
+      layout: "wide",
+    });
     expect(result.success).toBe(true);
     expect(result.metadata.command).toContain("incomestatement");
   });
 
   it("produces a cash flow statement", async () => {
-    const result = await cashFlowTool.execute({ outputFormat: "csv", layout: "bare" });
+    const result = await cashFlowTool.execute({
+      outputFormat: "csv",
+      layout: "bare",
+    });
     expect(result.success).toBe(true);
     expect(result.metadata.command).toContain("cashflow");
   });

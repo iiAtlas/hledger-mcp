@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { RewriteTransactionsTool } from "../src/tools/rewrite.js";
 
-async function setupTempDir(): Promise<{ dir: string; journalPath: string; }> {
+async function setupTempDir(): Promise<{ dir: string; journalPath: string }> {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "hledger-rewrite-"));
   const resourcesDir = path.resolve("test/resources");
   const entries = await fs.readdir(resourcesDir);
@@ -11,7 +11,9 @@ async function setupTempDir(): Promise<{ dir: string; journalPath: string; }> {
   await Promise.all(
     entries
       .filter((file) => file.endsWith(".journal"))
-      .map((file) => fs.copyFile(path.join(resourcesDir, file), path.join(dir, file)))
+      .map((file) =>
+        fs.copyFile(path.join(resourcesDir, file), path.join(dir, file)),
+      ),
   );
 
   return {
@@ -75,7 +77,10 @@ describe("RewriteTransactionsTool", () => {
     expect(result.success).toBe(true);
     expect(result.metadata.command).toContain("rewrite");
 
-    const julyContents = await fs.readFile(path.join(tempDir, "07-jul.journal"), "utf8");
+    const julyContents = await fs.readFile(
+      path.join(tempDir, "07-jul.journal"),
+      "utf8",
+    );
     expect(julyContents).toContain("equity:owner:reimbursable");
     expect(julyContents).toContain("assets:receivable:demo-project");
 

@@ -1,9 +1,12 @@
-import { z } from "zod";
-import { SimpleReportTool, ToolMetadata } from "../base-tool.js";
+import type { z } from "zod";
+import type { ToolMetadata } from "../base-tool.js";
+import { SimpleReportTool } from "../base-tool.js";
 import { CommonOptionsSchema, OutputFormatSchema } from "../types.js";
 
 const FilesInputSchema = CommonOptionsSchema.extend({
-  outputFormat: OutputFormatSchema.optional().describe("Output format (txt, csv, etc.)"),
+  outputFormat: OutputFormatSchema.optional().describe(
+    "Output format (txt, csv, etc.)",
+  ),
 });
 
 export class FilesTool extends SimpleReportTool<typeof FilesInputSchema> {

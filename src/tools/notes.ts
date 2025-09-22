@@ -1,9 +1,13 @@
 import { z } from "zod";
-import { QueryableTool, ToolMetadata } from "../base-tool.js";
+import type { ToolMetadata } from "../base-tool.js";
+import { QueryableTool } from "../base-tool.js";
 import { CommonOptionsSchema } from "../types.js";
 
 const NotesInputSchema = CommonOptionsSchema.extend({
-  query: z.string().optional().describe("Optional query to filter transactions"),
+  query: z
+    .string()
+    .optional()
+    .describe("Optional query to filter transactions"),
 });
 
 export class NotesTool extends QueryableTool<typeof NotesInputSchema> {

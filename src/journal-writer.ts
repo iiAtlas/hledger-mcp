@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { HLedgerExecutor } from "./executor.js";
-import { CommandResult } from "./types.js";
+import type { CommandResult } from "./types.js";
 
 interface AppendTransactionParams {
   journalPath: string;
@@ -45,7 +45,11 @@ async function ensureDirectory(filePath: string): Promise<void> {
   await fs.mkdir(dir, { recursive: true });
 }
 
-async function createWorkingCopy(sourcePath: string, destinationPath: string, sourceExists: boolean): Promise<void> {
+async function createWorkingCopy(
+  sourcePath: string,
+  destinationPath: string,
+  sourceExists: boolean,
+): Promise<void> {
   if (sourceExists) {
     await fs.copyFile(sourcePath, destinationPath);
   } else {
@@ -70,7 +74,9 @@ async function determineSeparator(tempPath: string): Promise<string> {
   }
 }
 
-export async function createJournalWorkspace(journalPath: string): Promise<JournalWorkspace> {
+export async function createJournalWorkspace(
+  journalPath: string,
+): Promise<JournalWorkspace> {
   await ensureDirectory(journalPath);
 
   const journalExists = await fileExists(journalPath);
@@ -89,13 +95,15 @@ export async function createJournalWorkspace(journalPath: string): Promise<Journ
   };
 }
 
-export async function cleanupJournalWorkspace(workspace: JournalWorkspace): Promise<void> {
+export async function cleanupJournalWorkspace(
+  workspace: JournalWorkspace,
+): Promise<void> {
   await fs.rm(workspace.tempPath, { force: true });
 }
 
 export async function finalizeJournalWorkspace(
   workspace: JournalWorkspace,
-  options: FinalizeWorkspaceOptions = {}
+  options: FinalizeWorkspaceOptions = {},
 ): Promise<string | undefined> {
   let backupPath: string | undefined;
 
@@ -128,7 +136,10 @@ export async function appendTransactionSafely({
 
   let checkResult: CommandResult;
   try {
-    checkResult = await HLedgerExecutor.execute("check", ["--file", workspace.tempPath]);
+    checkResult = await HLedgerExecutor.execute("check", [
+      "--file",
+      workspace.tempPath,
+    ]);
   } catch (error) {
     await cleanupJournalWorkspace(workspace);
     throw error;

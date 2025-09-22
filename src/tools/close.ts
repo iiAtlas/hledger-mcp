@@ -1,29 +1,74 @@
 import path from "node:path";
 import { z } from "zod";
-import { BaseTool, ToolMetadata } from "../base-tool.js";
+import type { ToolMetadata } from "../base-tool.js";
+import { BaseTool } from "../base-tool.js";
 import { appendTransactionSafely } from "../journal-writer.js";
-import { CommonOptionsSchema, FilePathSchema, ValidationError } from "../types.js";
+import {
+  CommonOptionsSchema,
+  FilePathSchema,
+  ValidationError,
+} from "../types.js";
 import { HLedgerExecutor } from "../executor.js";
 
-const CloseModeSchema = z.enum(["close", "open", "clopen", "assign", "assert", "retain"]);
+const CloseModeSchema = z.enum([
+  "close",
+  "open",
+  "clopen",
+  "assign",
+  "assert",
+  "retain",
+]);
 const AssertionTypeSchema = z.enum(["=", "==", "=*", "==*"]);
 const RoundTypeSchema = z.enum(["none", "soft", "hard", "all"]);
 
 const CloseInputSchema = CommonOptionsSchema.extend({
   file: FilePathSchema.optional(),
-  mode: CloseModeSchema.optional().describe("Which closing transaction(s) to generate"),
-  tagValue: z.string().optional().describe("Optional tag value for the generated transactions"),
+  mode: CloseModeSchema.optional().describe(
+    "Which closing transaction(s) to generate",
+  ),
+  tagValue: z
+    .string()
+    .optional()
+    .describe("Optional tag value for the generated transactions"),
   explicit: z.boolean().optional().describe("Show all amounts explicitly"),
-  showCosts: z.boolean().optional().describe("Separate postings with different costs"),
-  interleaved: z.boolean().optional().describe("Interleave source and destination postings"),
-  assertionType: AssertionTypeSchema.optional().describe("Balance assertion strictness"),
-  closeDescription: z.string().optional().describe("Custom description for the closing transaction"),
-  closeAccount: z.string().optional().describe("Destination account for closing balances"),
-  openDescription: z.string().optional().describe("Custom description for the opening transaction"),
-  openAccount: z.string().optional().describe("Source account for opening balances"),
-  round: RoundTypeSchema.optional().describe("Rounding style for displayed amounts"),
-  query: z.string().optional().describe("Account query to select accounts to close"),
-  dryRun: z.boolean().optional().describe("If true, preview the generated entries without writing them"),
+  showCosts: z
+    .boolean()
+    .optional()
+    .describe("Separate postings with different costs"),
+  interleaved: z
+    .boolean()
+    .optional()
+    .describe("Interleave source and destination postings"),
+  assertionType: AssertionTypeSchema.optional().describe(
+    "Balance assertion strictness",
+  ),
+  closeDescription: z
+    .string()
+    .optional()
+    .describe("Custom description for the closing transaction"),
+  closeAccount: z
+    .string()
+    .optional()
+    .describe("Destination account for closing balances"),
+  openDescription: z
+    .string()
+    .optional()
+    .describe("Custom description for the opening transaction"),
+  openAccount: z
+    .string()
+    .optional()
+    .describe("Source account for opening balances"),
+  round: RoundTypeSchema.optional().describe(
+    "Rounding style for displayed amounts",
+  ),
+  query: z
+    .string()
+    .optional()
+    .describe("Account query to select accounts to close"),
+  dryRun: z
+    .boolean()
+    .optional()
+    .describe("If true, preview the generated entries without writing them"),
 });
 
 interface CloseToolOptions {
@@ -34,7 +79,8 @@ interface CloseToolOptions {
 export class CloseTool extends BaseTool<typeof CloseInputSchema> {
   readonly metadata: ToolMetadata<typeof CloseInputSchema> = {
     name: "hledger_close",
-    description: "Generate and optionally append closing/opening transactions to the journal",
+    description:
+      "Generate and optionally append closing/opening transactions to the journal",
     schema: CloseInputSchema,
   };
 
@@ -55,7 +101,9 @@ export class CloseTool extends BaseTool<typeof CloseInputSchema> {
     const dryRun = input.dryRun ?? false;
 
     if (this.readOnly && !dryRun) {
-      throw new ValidationError("Close operations are disabled while the server is running in read-only mode");
+      throw new ValidationError(
+        "Close operations are disabled while the server is running in read-only mode",
+      );
     }
 
     const targetFile = input.file ?? this.journalFilePath;
@@ -113,14 +161,19 @@ export class CloseTool extends BaseTool<typeof CloseInputSchema> {
         backupPath: appendResult.backupPath,
         checkOutput: appendResult.checkResult.stdout,
       }),
-      stderr: [closeResult.stderr, appendResult.checkResult.stderr].filter(Boolean).join("\n"),
+      stderr: [closeResult.stderr, appendResult.checkResult.stderr]
+        .filter(Boolean)
+        .join("\n"),
       exitCode: 0,
       command: closeResult.command,
       duration: closeResult.duration + appendResult.checkResult.duration,
     };
   }
 
-  private buildCloseArgs(input: z.infer<typeof CloseInputSchema>, resolvedFile: string): string[] {
+  private buildCloseArgs(
+    input: z.infer<typeof CloseInputSchema>,
+    resolvedFile: string,
+  ): string[] {
     const args = this.buildCommonArgs(input);
 
     const mode = input.mode ?? "clopen";
@@ -134,8 +187,10 @@ export class CloseTool extends BaseTool<typeof CloseInputSchema> {
     if (input.explicit) args.push("--explicit");
     if (input.showCosts) args.push("--show-costs");
     if (input.interleaved) args.push("--interleaved");
-    if (input.assertionType) args.push(`--assertion-type=${input.assertionType}`);
-    if (input.closeDescription) args.push("--close-desc", input.closeDescription);
+    if (input.assertionType)
+      args.push(`--assertion-type=${input.assertionType}`);
+    if (input.closeDescription)
+      args.push("--close-desc", input.closeDescription);
     if (input.closeAccount) args.push("--close-acct", input.closeAccount);
     if (input.openDescription) args.push("--open-desc", input.openDescription);
     if (input.openAccount) args.push("--open-acct", input.openAccount);
@@ -168,7 +223,7 @@ export class CloseTool extends BaseTool<typeof CloseInputSchema> {
       } else if (char === quoteChar && inQuotes) {
         inQuotes = false;
         quoteChar = "";
-      } else if (char === ' ' && !inQuotes) {
+      } else if (char === " " && !inQuotes) {
         if (current.trim()) {
           parts.push(current.trim());
           current = "";

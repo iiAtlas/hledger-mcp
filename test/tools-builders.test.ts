@@ -30,7 +30,11 @@ describe("Tool argument builders", () => {
   let executeSpy: jest.SpiedFunction<typeof HLedgerExecutor.execute>;
 
   beforeEach(() => {
-    executeSpy = jest.spyOn(HLedgerExecutor, "execute").mockImplementation(async (command, args) => mockCommandResult(command, args));
+    executeSpy = jest
+      .spyOn(HLedgerExecutor, "execute")
+      .mockImplementation(async (command, args) =>
+        mockCommandResult(command, args),
+      );
   });
 
   afterEach(() => {
@@ -39,7 +43,13 @@ describe("Tool argument builders", () => {
 
   it("builds accounts command options", async () => {
     const tool = new AccountsTool(journalPath);
-    const result = await tool.execute({ flat: true, tree: true, drop: 2, declared: true, query: "assets" });
+    const result = await tool.execute({
+      flat: true,
+      tree: true,
+      drop: 2,
+      declared: true,
+      query: "assets",
+    });
 
     expect(result.success).toBe(true);
     expect(result.metadata.command).toContain("--flat");
@@ -78,17 +88,44 @@ describe("Tool argument builders", () => {
     });
 
     const cmd = result.metadata.command;
-    ["--sum", "--budget", "--valuechange", "--gain", "--count", "--change", "--cumulative", "--historical",
-      "--flat", "--tree", "--drop 1", "--declared", "--average", "--row-total", "--no-total",
-      "--sort-amount", "--percent", "--invert", "--transpose", "--layout bare", "--no-elide", "--format custom",
-      "--output-format csv"].forEach(flag => {
+    [
+      "--sum",
+      "--budget",
+      "--valuechange",
+      "--gain",
+      "--count",
+      "--change",
+      "--cumulative",
+      "--historical",
+      "--flat",
+      "--tree",
+      "--drop 1",
+      "--declared",
+      "--average",
+      "--row-total",
+      "--no-total",
+      "--sort-amount",
+      "--percent",
+      "--invert",
+      "--transpose",
+      "--layout bare",
+      "--no-elide",
+      "--format custom",
+      "--output-format csv",
+    ].forEach((flag) => {
       expect(cmd).toContain(flag);
     });
   });
 
   it("builds register command options", async () => {
     const tool = new RegisterTool(journalPath);
-    const result = await tool.execute({ average: true, related: true, format: "%d", outputFormat: "csv", query: "assets" });
+    const result = await tool.execute({
+      average: true,
+      related: true,
+      format: "%d",
+      outputFormat: "csv",
+      query: "assets",
+    });
 
     const cmd = result.metadata.command;
     expect(cmd).toContain("--average");
@@ -100,7 +137,14 @@ describe("Tool argument builders", () => {
 
   it("builds print command options", async () => {
     const tool = new PrintTool(journalPath);
-    const result = await tool.execute({ format: "%d %a", explicit: true, match: "cash", pretty: true, outputFormat: "csv", query: "cash" });
+    const result = await tool.execute({
+      format: "%d %a",
+      explicit: true,
+      match: "cash",
+      pretty: true,
+      outputFormat: "csv",
+      query: "cash",
+    });
 
     const cmd = result.metadata.command;
     expect(cmd).toContain("--format %d %a");
@@ -112,7 +156,15 @@ describe("Tool argument builders", () => {
 
   it("builds balance sheet command options", async () => {
     const tool = new BalanceSheetTool(journalPath);
-    const result = await tool.execute({ flat: true, tree: true, drop: 1, declared: true, noTotal: true, layout: "wide", outputFormat: "csv" });
+    const result = await tool.execute({
+      flat: true,
+      tree: true,
+      drop: 1,
+      declared: true,
+      noTotal: true,
+      layout: "wide",
+      outputFormat: "csv",
+    });
 
     const cmd = result.metadata.command;
     expect(cmd).toContain("--flat");
@@ -125,10 +177,17 @@ describe("Tool argument builders", () => {
 
   it("builds balancesheetequity command options", async () => {
     const tool = new BalanceSheetEquityTool(journalPath);
-    const result = await tool.execute({ flat: true, drop: 1, layout: "bare", outputFormat: "csv" });
+    const result = await tool.execute({
+      flat: true,
+      drop: 1,
+      layout: "bare",
+      outputFormat: "csv",
+    });
 
     const cmd = result.metadata.command;
-    ["--flat", "--drop 1", "--layout bare"].forEach(flag => expect(cmd).toContain(flag));
+    ["--flat", "--drop 1", "--layout bare"].forEach((flag) =>
+      expect(cmd).toContain(flag),
+    );
   });
 
   it("builds incomestatement command options", async () => {
@@ -146,15 +205,31 @@ describe("Tool argument builders", () => {
     });
 
     const cmd = result.metadata.command;
-    ["--average", "--no-total", "--percent", "--layout tall"].forEach(flag => expect(cmd).toContain(flag));
+    ["--average", "--no-total", "--percent", "--layout tall"].forEach((flag) =>
+      expect(cmd).toContain(flag),
+    );
   });
 
   it("builds cashflow command options", async () => {
     const tool = new CashFlowTool(journalPath);
-    const result = await tool.execute({ flat: true, tree: true, drop: 1, declared: true, layout: "tidy", noTotal: true });
+    const result = await tool.execute({
+      flat: true,
+      tree: true,
+      drop: 1,
+      declared: true,
+      layout: "tidy",
+      noTotal: true,
+    });
 
     const cmd = result.metadata.command;
-    ["--flat", "--tree", "--drop 1", "--declared", "--layout tidy", "--no-total"].forEach(flag => expect(cmd).toContain(flag));
+    [
+      "--flat",
+      "--tree",
+      "--drop 1",
+      "--declared",
+      "--layout tidy",
+      "--no-total",
+    ].forEach((flag) => expect(cmd).toContain(flag));
   });
 
   it("builds payees command options", async () => {
@@ -199,7 +274,10 @@ describe("Tool argument builders", () => {
 
   it("builds activity command options", async () => {
     const tool = new ActivityTool(journalPath);
-    const result = await tool.execute({ interval: "monthly", cumulative: true });
+    const result = await tool.execute({
+      interval: "monthly",
+      cumulative: true,
+    });
 
     const cmd = result.metadata.command;
     expect(cmd).toContain("--monthly");

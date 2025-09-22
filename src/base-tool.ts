@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { HLedgerExecutor } from "./executor.js";
-import { CommonOptionsSchema, CommandResult, OutputFormatSchema, ValidationError } from "./types.js";
+import type { CommandResult, OutputFormatSchema } from "./types.js";
+import { CommonOptionsSchema, ValidationError } from "./types.js";
 
 export interface ToolMetadata<TSchema extends z.AnyZodObject> {
   name: string;
@@ -59,7 +60,7 @@ export abstract class BaseTool<TSchema extends z.AnyZodObject> {
         success: false,
         error: "Validation error",
         details: error.issues.map((issue) => ({
-          path: issue.path.join('.'),
+          path: issue.path.join("."),
           message: issue.message,
         })),
       };
@@ -89,24 +90,24 @@ export abstract class BaseTool<TSchema extends z.AnyZodObject> {
 
     // Use file from options, or fall back to constructor-provided journal file path
     const fileToUse = normalized.file || this.journalFilePath;
-    if (fileToUse) args.push('--file', fileToUse);
-    if (normalized.begin) args.push('--begin', normalized.begin);
-    if (normalized.end) args.push('--end', normalized.end);
-    if (normalized.period) args.push('--period', normalized.period);
-    if (normalized.daily) args.push('--daily');
-    if (normalized.weekly) args.push('--weekly');
-    if (normalized.monthly) args.push('--monthly');
-    if (normalized.quarterly) args.push('--quarterly');
-    if (normalized.yearly) args.push('--yearly');
-    if (normalized.depth) args.push('--depth', normalized.depth.toString());
-    if (normalized.real) args.push('--real');
-    if (normalized.empty) args.push('--empty');
-    if (normalized.cost) args.push('--cost');
-    if (normalized.market) args.push('--market');
-    if (normalized.exchange) args.push('--exchange', normalized.exchange);
-    if (normalized.cleared) args.push('--cleared');
-    if (normalized.pending) args.push('--pending');
-    if (normalized.unmarked) args.push('--unmarked');
+    if (fileToUse) args.push("--file", fileToUse);
+    if (normalized.begin) args.push("--begin", normalized.begin);
+    if (normalized.end) args.push("--end", normalized.end);
+    if (normalized.period) args.push("--period", normalized.period);
+    if (normalized.daily) args.push("--daily");
+    if (normalized.weekly) args.push("--weekly");
+    if (normalized.monthly) args.push("--monthly");
+    if (normalized.quarterly) args.push("--quarterly");
+    if (normalized.yearly) args.push("--yearly");
+    if (normalized.depth) args.push("--depth", normalized.depth.toString());
+    if (normalized.real) args.push("--real");
+    if (normalized.empty) args.push("--empty");
+    if (normalized.cost) args.push("--cost");
+    if (normalized.market) args.push("--market");
+    if (normalized.exchange) args.push("--exchange", normalized.exchange);
+    if (normalized.cleared) args.push("--cleared");
+    if (normalized.pending) args.push("--pending");
+    if (normalized.unmarked) args.push("--unmarked");
 
     return args;
   }
@@ -114,17 +115,22 @@ export abstract class BaseTool<TSchema extends z.AnyZodObject> {
   /**
    * Add output format argument
    */
-  protected addOutputFormat(args: string[], format?: z.infer<typeof OutputFormatSchema>): void {
+  protected addOutputFormat(
+    args: string[],
+    format?: z.infer<typeof OutputFormatSchema>,
+  ): void {
     if (!this.supportsOutputFormat()) {
       if (format) {
-        throw new ValidationError('outputFormat is not supported for this tool');
+        throw new ValidationError(
+          "outputFormat is not supported for this tool",
+        );
       }
       return;
     }
 
     const effectiveFormat = format ?? this.defaultOutputFormat();
-    if (effectiveFormat && effectiveFormat !== 'txt') {
-      args.push('--output-format', effectiveFormat);
+    if (effectiveFormat && effectiveFormat !== "txt") {
+      args.push("--output-format", effectiveFormat);
     }
   }
 
@@ -138,15 +144,19 @@ export abstract class BaseTool<TSchema extends z.AnyZodObject> {
   /**
    * Default output format to request when supported.
    */
-  protected defaultOutputFormat(): z.infer<typeof OutputFormatSchema> | undefined {
-    return 'csv';
+  protected defaultOutputFormat():
+    | z.infer<typeof OutputFormatSchema>
+    | undefined {
+    return "csv";
   }
 }
 
 /**
  * Base class for simple reporting tools
  */
-export abstract class SimpleReportTool<TSchema extends z.AnyZodObject> extends BaseTool<TSchema> {
+export abstract class SimpleReportTool<
+  TSchema extends z.AnyZodObject,
+> extends BaseTool<TSchema> {
   protected async run(input: z.infer<TSchema>): Promise<CommandResult> {
     const args = this.buildArgs(input);
     return await HLedgerExecutor.execute(this.getCommand(), args);
@@ -159,7 +169,9 @@ export abstract class SimpleReportTool<TSchema extends z.AnyZodObject> extends B
 /**
  * Base class for tools that support queries
  */
-export abstract class QueryableTool<TSchema extends z.AnyZodObject> extends SimpleReportTool<TSchema> {
+export abstract class QueryableTool<
+  TSchema extends z.AnyZodObject,
+> extends SimpleReportTool<TSchema> {
   protected addQueryArgs(args: string[], query?: string): void {
     if (query) {
       // Split query on spaces but respect quotes
@@ -170,9 +182,9 @@ export abstract class QueryableTool<TSchema extends z.AnyZodObject> extends Simp
 
   private parseQuery(query: string): string[] {
     const parts: string[] = [];
-    let current = '';
+    let current = "";
     let inQuotes = false;
-    let quoteChar = '';
+    let quoteChar = "";
 
     for (let i = 0; i < query.length; i++) {
       const char = query[i];
@@ -182,11 +194,11 @@ export abstract class QueryableTool<TSchema extends z.AnyZodObject> extends Simp
         quoteChar = char;
       } else if (char === quoteChar && inQuotes) {
         inQuotes = false;
-        quoteChar = '';
-      } else if (char === ' ' && !inQuotes) {
+        quoteChar = "";
+      } else if (char === " " && !inQuotes) {
         if (current.trim()) {
           parts.push(current.trim());
-          current = '';
+          current = "";
         }
       } else {
         current += char;
