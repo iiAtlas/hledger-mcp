@@ -20,7 +20,9 @@ const ALLOWED_FLAGS = new Set([
   "ignore-assertions", "strict", "verbose-tags", "pivot", "drop", "declared",
   "no-elide", "format", "layout", "base-url", "output-file", "pretty",
   "commodity-style", "value", "valuechange", "today", "date2", "no-totals", "related",
-  "catchup", "dry-run", "add-posting", "diff"
+  "catchup", "dry-run", "add-posting", "diff", "clopen", "close", "open",
+  "assign", "assert", "retain", "show-costs", "interleaved", "assertion-type",
+  "close-desc", "close-acct", "open-desc", "open-acct", "round"
 ]);
 
 export interface ExecuteOptions {

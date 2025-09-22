@@ -18,6 +18,7 @@ import { ActivityTool } from "./tools/activity.js";
 import { AddTransactionTool } from "./tools/add.js";
 import { ImportTransactionsTool } from "./tools/import.js";
 import { RewriteTransactionsTool } from "./tools/rewrite.js";
+import { CloseTool } from "./tools/close.js";
 
 // Check if hledger CLI is installed
 function checkHledgerInstallation(): boolean {
@@ -79,6 +80,10 @@ const importTool = new ImportTransactionsTool(journalFilePath, {
   skipBackup,
 });
 const rewriteTool = new RewriteTransactionsTool(journalFilePath, {
+  readOnly: readOnlyMode,
+  skipBackup,
+});
+const closeTool = new CloseTool(journalFilePath, {
   readOnly: readOnlyMode,
   skipBackup,
 });
@@ -292,6 +297,18 @@ server.tool(
   rewriteTool.metadata.schema.shape,
   async (args) => {
     const result = await rewriteTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+server.tool(
+  closeTool.metadata.name,
+  closeTool.metadata.description,
+  closeTool.metadata.schema.shape,
+  async (args) => {
+    const result = await closeTool.execute(args);
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
