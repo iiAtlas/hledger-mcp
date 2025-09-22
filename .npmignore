@@ -1,0 +1,21 @@
+# Tests and fixtures
+coverage/
+test/
+
+# Local configuration
+.claude/
+.nvmrc
+.prettierignore
+
+# Assets not needed at runtime
+images/
+
+# Local temporary artifacts
+.tmp/
+tmp/
+temp/
+*.log
+*.tsbuildinfo
+
+# Keep the compiled output in the package
+!build/
