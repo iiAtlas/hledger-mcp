@@ -5,7 +5,7 @@ import { BalanceSheetTool } from "../src/tools/balancesheet.js";
 import { PrintTool } from "../src/tools/print.js";
 import { RegisterTool } from "../src/tools/register.js";
 
-const journalPath = path.resolve("test/master.journal");
+const journalPath = path.resolve("test/resources/master.journal");
 
 describe("hledger MCP tools", () => {
   const accountsTool = new AccountsTool(journalPath);

@@ -120,10 +120,10 @@ describe("HLedgerExecutor", () => {
     setupSpawnMock({ stdout: "ok", exitCode: 0 });
     const Executor = await loadExecutor();
 
-    await Executor.execute("print", ["-f", "test/master.journal"]);
+    await Executor.execute("print", ["-f", "test/resources/master.journal"]);
     expect(spawnMock).toHaveBeenCalledWith(
       "hledger",
-      expect.arrayContaining(["print", "-f", "test/master.journal"]),
+      expect.arrayContaining(["print", "-f", "test/resources/master.journal"]),
       expect.any(Object)
     );
   });
