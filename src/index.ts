@@ -3,6 +3,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { execSync } from "child_process";
 import { AccountsTool } from "./tools/accounts.js";
 import { BalanceTool } from "./tools/balance.js";
+import { PrintTool } from "./tools/print.js";
 
 // Check if hledger CLI is installed
 function checkHledgerInstallation(): boolean {
@@ -26,6 +27,7 @@ if (!journalFilePath) {
 // Initialize tools with journal file path
 const accountsTool = new AccountsTool(journalFilePath);
 const balanceTool = new BalanceTool(journalFilePath);
+const printTool = new PrintTool(journalFilePath);
 
 // Create server instance
 const server = new McpServer({
@@ -56,6 +58,18 @@ server.tool(
   balanceTool.metadata.schema.shape,
   async (args) => {
     const result = await balanceTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+server.tool(
+  printTool.metadata.name,
+  printTool.metadata.description,
+  printTool.metadata.schema.shape,
+  async (args) => {
+    const result = await printTool.execute(args);
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
