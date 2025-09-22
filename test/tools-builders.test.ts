@@ -3,8 +3,11 @@ import { HLedgerExecutor } from "../src/executor.js";
 import { AccountsTool } from "../src/tools/accounts.js";
 import { BalanceTool } from "../src/tools/balance.js";
 import { BalanceSheetTool } from "../src/tools/balancesheet.js";
+import { BalanceSheetEquityTool } from "../src/tools/balancesheetequity.js";
 import { PrintTool } from "../src/tools/print.js";
 import { RegisterTool } from "../src/tools/register.js";
+import { IncomeStatementTool } from "../src/tools/incomestatement.js";
+import { CashFlowTool } from "../src/tools/cashflow.js";
 
 const journalPath = "/tmp/test.journal";
 
@@ -112,5 +115,39 @@ describe("Tool argument builders", () => {
     expect(cmd).toContain("--declared");
     expect(cmd).toContain("--no-total");
     expect(cmd).toContain("--layout wide");
+  });
+
+  it("builds balancesheetequity command options", async () => {
+    const tool = new BalanceSheetEquityTool(journalPath);
+    const result = await tool.execute({ flat: true, drop: 1, layout: "bare", outputFormat: "csv" });
+
+    const cmd = result.metadata.command;
+    ["--flat", "--drop 1", "--layout bare"].forEach(flag => expect(cmd).toContain(flag));
+  });
+
+  it("builds incomestatement command options", async () => {
+    const tool = new IncomeStatementTool(journalPath);
+    const result = await tool.execute({
+      flat: true,
+      tree: true,
+      drop: 1,
+      declared: true,
+      average: true,
+      noTotal: true,
+      percent: true,
+      layout: "tall",
+      outputFormat: "csv",
+    });
+
+    const cmd = result.metadata.command;
+    ["--average", "--no-total", "--percent", "--layout tall"].forEach(flag => expect(cmd).toContain(flag));
+  });
+
+  it("builds cashflow command options", async () => {
+    const tool = new CashFlowTool(journalPath);
+    const result = await tool.execute({ flat: true, tree: true, drop: 1, declared: true, layout: "tidy", noTotal: true });
+
+    const cmd = result.metadata.command;
+    ["--flat", "--tree", "--drop 1", "--declared", "--layout tidy", "--no-total"].forEach(flag => expect(cmd).toContain(flag));
   });
 });

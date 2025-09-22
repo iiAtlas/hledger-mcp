@@ -3,9 +3,12 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { execSync } from "child_process";
 import { AccountsTool } from "./tools/accounts.js";
 import { BalanceTool } from "./tools/balance.js";
+import { BalanceSheetEquityTool } from "./tools/balancesheetequity.js";
 import { PrintTool } from "./tools/print.js";
 import { RegisterTool } from "./tools/register.js";
 import { BalanceSheetTool } from "./tools/balancesheet.js";
+import { IncomeStatementTool } from "./tools/incomestatement.js";
+import { CashFlowTool } from "./tools/cashflow.js";
 
 // Check if hledger CLI is installed
 function checkHledgerInstallation(): boolean {
@@ -32,6 +35,9 @@ const balanceTool = new BalanceTool(journalFilePath);
 const printTool = new PrintTool(journalFilePath);
 const registerTool = new RegisterTool(journalFilePath);
 const balanceSheetTool = new BalanceSheetTool(journalFilePath);
+const balanceSheetEquityTool = new BalanceSheetEquityTool(journalFilePath);
+const incomeStatementTool = new IncomeStatementTool(journalFilePath);
+const cashFlowTool = new CashFlowTool(journalFilePath);
 
 // Create server instance
 const server = new McpServer({
@@ -98,6 +104,42 @@ server.tool(
   balanceSheetTool.metadata.schema.shape,
   async (args) => {
     const result = await balanceSheetTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+server.tool(
+  balanceSheetEquityTool.metadata.name,
+  balanceSheetEquityTool.metadata.description,
+  balanceSheetEquityTool.metadata.schema.shape,
+  async (args) => {
+    const result = await balanceSheetEquityTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+server.tool(
+  incomeStatementTool.metadata.name,
+  incomeStatementTool.metadata.description,
+  incomeStatementTool.metadata.schema.shape,
+  async (args) => {
+    const result = await incomeStatementTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+server.tool(
+  cashFlowTool.metadata.name,
+  cashFlowTool.metadata.description,
+  cashFlowTool.metadata.schema.shape,
+  async (args) => {
+    const result = await cashFlowTool.execute(args);
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };

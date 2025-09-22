@@ -2,7 +2,7 @@ import { z } from "zod";
 import { SimpleReportTool, ToolMetadata } from "../base-tool.js";
 import { CommonOptionsSchema, OutputFormatSchema } from "../types.js";
 
-const BalanceSheetInputSchema = CommonOptionsSchema.extend({
+export const BalanceSheetInputSchema = CommonOptionsSchema.extend({
   outputFormat: OutputFormatSchema.optional().describe("Output format (txt, csv, json, etc.)"),
   flat: z.boolean().optional().describe("Show accounts as a flat list"),
   tree: z.boolean().optional().describe("Show accounts as a tree (default)"),
