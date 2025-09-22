@@ -1,7 +1,7 @@
 {
   "name": "hledger-mcp",
   "version": "1.0.0",
-  "description": "",
+  "description": "HLedger MCP server - A Model Context Protocol bridge for HLedger accounting software",
   "main": "index.js",
   "scripts": {
     "build": "tsc && chmod 755 build/index.js",
@@ -11,9 +11,29 @@
   "bin": {
     "hledger-mcp": "./build/index.js"
   },
-  "keywords": [],
+  "keywords": [
+    "hledger",
+    "accounting",
+    "mcp",
+    "model-context-protocol",
+    "finance",
+    "bookkeeping",
+    "ledger",
+    "plain-text-accounting"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anthropics/hledger-mcp.git"
+  },
+  "homepage": "https://github.com/anthropics/hledger-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/anthropics/hledger-mcp/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "type": "module",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.18.1",
