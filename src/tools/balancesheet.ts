@@ -8,7 +8,6 @@ const BalanceSheetInputSchema = CommonOptionsSchema.extend({
   tree: z.boolean().optional().describe("Show accounts as a tree (default)"),
   drop: z.number().int().min(0).max(5).optional().describe("Omit N leading account name parts"),
   declared: z.boolean().optional().describe("Include declared accounts even if unused"),
-  equity: z.boolean().optional().describe("Include equity section"),
   noTotal: z.boolean().optional().describe("Omit final total row"),
   layout: z.enum(["wide", "tall", "bare", "tidy"]).optional().describe("Layout for multi-commodity amounts"),
 });
@@ -16,7 +15,7 @@ const BalanceSheetInputSchema = CommonOptionsSchema.extend({
 export class BalanceSheetTool extends SimpleReportTool<typeof BalanceSheetInputSchema> {
   readonly metadata: ToolMetadata<typeof BalanceSheetInputSchema> = {
     name: "hledger_balancesheet",
-    description: "Summarize assets and liabilities (optionally equity) with balance sheet layout",
+    description: "Summarize assets and liabilities with balance sheet layout",
     schema: BalanceSheetInputSchema,
   };
 
@@ -35,7 +34,6 @@ export class BalanceSheetTool extends SimpleReportTool<typeof BalanceSheetInputS
     if (input.tree) args.push('--tree');
     if (input.drop !== undefined) args.push('--drop', input.drop.toString());
     if (input.declared) args.push('--declared');
-    if (input.equity) args.push('--equity');
     if (input.noTotal) args.push('--no-total');
     if (input.layout) args.push('--layout', input.layout);
 
