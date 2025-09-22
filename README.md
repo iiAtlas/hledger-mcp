@@ -2,7 +2,7 @@
 
 ![HLedger MCP Banner](images/hledger-mcp-banner.jpg)
 
-A Model Context Protocol (MCP) server that provides AI assistants with direct access to HLedger accounting data and functionality. This server enables AI applications to query account balances, generate financial reports, and analyze accounting data through a standardized protocol.
+A Model Context Protocol (MCP) server that provides AI assistants (MCP Clients) with direct access to HLedger accounting data and functionality. This server enables AI applications to query account balances, generate financial reports, add new entires, and analyze accounting data through a standardized protocol.  It has support for most `hledger` cli commands, the ability to fetch an traverse `!include`'d journal files, and a safe `--read-only` mode.  I hope you find it useful!
 
 ## Features
 
@@ -72,13 +72,34 @@ Add the following to your Claude Desktop configuration file:
   "mcpServers": {
     "hledger": {
       "command": "npx",
-      "args": ["hledger-mcp", "/path/to/your/journal.ledger"]
+      "args": ["hledger-mcp", "/path/to/your/master.journal"]
     }
   }
 }
 ```
 
-Replace `/path/to/your/journal.ledger` with the actual path to your HLedger journal file.
+Replace `/path/to/your/master.journal` with the actual path to your HLedger journal file.  If you have a `master.journal` I'd recommend that, as this tool has support for any other files brought in using HLedgers existing `!include` syntax.
+
+
+#### Configuration options
+
+You can toggle write behaviour with optional flags:
+
+- `--read-only` &mdash; disables the add-transaction tool entirely; all write attempts return an error.
+- `--skip-backup` &mdash; prevents the server from creating `.bak` files before appending to an existing journal.
+
+Flags may appear before or after the journal path. Both options default to `false`.  I recommend starting with `--read-only` enabled until you get more comfortable with the tool.  Below is that sample config:
+
+```json
+{
+  "mcpServers": {
+    "hledger": {
+      "command": "npx",
+      "args": ["hledger-mcp", "/path/to/your/master.journal", "--read-only"]
+    }
+  }
+}
+```
 
 ### Other MCP Clients
 
@@ -90,29 +111,16 @@ npx hledger-mcp /path/to/your/journal.ledger
 
 The server communicates via stdio and expects the journal file path as the first argument.
 
-#### Command line options
-
-You can toggle write behaviour with optional flags:
-
-- `--read-only` &mdash; disables the add-transaction tool entirely; all write attempts return an error.
-- `--skip-backup` &mdash; prevents the server from creating `.bak` files before appending to an existing journal.
-
-Example:
-
-```bash
-npx hledger-mcp --read-only /path/to/journal.ledger
-```
-
-Flags may appear before or after the journal path. Both options default to `false`.
-
 ### Write tools
 
-When the server is not in `--read-only` mode, two tools can modify the primary journal:
+When the server is not in `--read-only` mode, four tools can modify the primary journal:
 
 - `hledger_add_transaction` accepts structured postings and appends a new transaction after validating with `hledger check`. Enable `dryRun` to preview the entry without writing.
 - `hledger_import` wraps `hledger import`, running the command against a temporary copy of the journal. Provide one or more `dataFiles` (journal, csv, etc.) and an optional `rulesFile`; set `dryRun` to inspect the diff before committing. Successful imports create timestamped `.bak` files unless `--skip-backup` is active.
 - `hledger_rewrite` runs `hledger rewrite` on a temporary copy, letting you specify one or more `addPostings` instructions for matching transactions. Use `dryRun` for a diff-only preview or `diff: true` to include the patch output alongside the applied change.
 - `hledger_close` produces closing/opening assertions, retain-earnings, or clopen transactions via `hledger close`. Preview the generated entries with `dryRun`, then append them atomically (with optional backups) once you’re satisfied.
+
+All write tools include a `dryRun` parameter to "try it out" before writing.
 
 ## Example Queries
 
@@ -177,10 +185,7 @@ hledger --version
 ```
 
 ### "Journal file path is required"
-The server requires a journal file path as an argument:
-```bash
-npx hledger-mcp /path/to/your/journal.ledger
-```
+The server requires a journal file path as an argument.  Check your config to make sure one is included, and valid.
 
 ### Claude Desktop Connection Issues
 1. Verify the journal file path is correct and accessible
@@ -189,7 +194,7 @@ npx hledger-mcp /path/to/your/journal.ledger
 
 ## License
 
-ISC License
+GPL-3.0 License
 
 ## Contributing
 
