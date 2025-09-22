@@ -25,6 +25,7 @@ The HLedger MCP server provides comprehensive access to HLedger's financial repo
 - **Descriptions** - Transaction description analysis
 - **Tags** - Query and analyze transaction tags
 - **Files** - Information about journal files
+- **Notes** - List unique transaction notes and memo fields
 
 ### Journal Updates
 - **Add Transaction** - Append new, validated journal entries with optional dry-run support

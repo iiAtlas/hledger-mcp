@@ -15,6 +15,7 @@ import { TagsTool } from "./tools/tags.js";
 import { FilesTool } from "./tools/files.js";
 import { StatsTool } from "./tools/stats.js";
 import { ActivityTool } from "./tools/activity.js";
+import { NotesTool } from "./tools/notes.js";
 import { AddTransactionTool } from "./tools/add.js";
 import { ImportTransactionsTool } from "./tools/import.js";
 import { RewriteTransactionsTool } from "./tools/rewrite.js";
@@ -71,6 +72,7 @@ const tagsTool = new TagsTool(journalFilePath);
 const filesTool = new FilesTool(journalFilePath);
 const statsTool = new StatsTool(journalFilePath);
 const activityTool = new ActivityTool(journalFilePath);
+const notesTool = new NotesTool(journalFilePath);
 const addTransactionTool = new AddTransactionTool(journalFilePath, {
   readOnly: readOnlyMode,
   skipBackup,
@@ -261,6 +263,18 @@ server.tool(
   activityTool.metadata.schema.shape,
   async (args) => {
     const result = await activityTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+server.tool(
+  notesTool.metadata.name,
+  notesTool.metadata.description,
+  notesTool.metadata.schema.shape,
+  async (args) => {
+    const result = await notesTool.execute(args);
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
