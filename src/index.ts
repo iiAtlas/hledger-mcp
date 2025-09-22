@@ -16,6 +16,7 @@ import { FilesTool } from "./tools/files.js";
 import { StatsTool } from "./tools/stats.js";
 import { ActivityTool } from "./tools/activity.js";
 import { AddTransactionTool } from "./tools/add.js";
+import { ImportTransactionsTool } from "./tools/import.js";
 
 // Check if hledger CLI is installed
 function checkHledgerInstallation(): boolean {
@@ -69,6 +70,10 @@ const filesTool = new FilesTool(journalFilePath);
 const statsTool = new StatsTool(journalFilePath);
 const activityTool = new ActivityTool(journalFilePath);
 const addTransactionTool = new AddTransactionTool(journalFilePath, {
+  readOnly: readOnlyMode,
+  skipBackup,
+});
+const importTool = new ImportTransactionsTool(journalFilePath, {
   readOnly: readOnlyMode,
   skipBackup,
 });
@@ -258,6 +263,18 @@ server.tool(
   addTransactionTool.metadata.schema.shape,
   async (args) => {
     const result = await addTransactionTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+server.tool(
+  importTool.metadata.name,
+  importTool.metadata.description,
+  importTool.metadata.schema.shape,
+  async (args) => {
+    const result = await importTool.execute(args);
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };

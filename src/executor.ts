@@ -19,7 +19,8 @@ const ALLOWED_FLAGS = new Set([
   "round", "new", "match", "location", "alias", "auto", "forecast",
   "ignore-assertions", "strict", "verbose-tags", "pivot", "drop", "declared",
   "no-elide", "format", "layout", "base-url", "output-file", "pretty",
-  "commodity-style", "value", "valuechange", "today", "date2", "no-totals", "related"
+  "commodity-style", "value", "valuechange", "today", "date2", "no-totals", "related",
+  "catchup", "dry-run"
 ]);
 
 export interface ExecuteOptions {

@@ -19,6 +19,18 @@ export interface AppendTransactionResult {
   checkResult: CommandResult;
 }
 
+export interface JournalWorkspace {
+  journalPath: string;
+  tempPath: string;
+  dir: string;
+  base: string;
+  journalExists: boolean;
+}
+
+export interface FinalizeWorkspaceOptions {
+  skipBackup?: boolean;
+}
+
 async function fileExists(filePath: string): Promise<boolean> {
   try {
     await fs.access(filePath);
@@ -58,13 +70,7 @@ async function determineSeparator(tempPath: string): Promise<string> {
   }
 }
 
-export async function appendTransactionSafely({
-  journalPath,
-  transaction,
-  dryRun = false,
-  skipBackup = false,
-}: AppendTransactionParams): Promise<AppendTransactionResult> {
-  const normalizedTransaction = transaction.trimEnd();
+export async function createJournalWorkspace(journalPath: string): Promise<JournalWorkspace> {
   await ensureDirectory(journalPath);
 
   const journalExists = await fileExists(journalPath);
@@ -74,24 +80,62 @@ export async function appendTransactionSafely({
 
   await createWorkingCopy(journalPath, tempPath, journalExists);
 
+  return {
+    journalPath,
+    tempPath,
+    dir,
+    base,
+    journalExists,
+  };
+}
+
+export async function cleanupJournalWorkspace(workspace: JournalWorkspace): Promise<void> {
+  await fs.rm(workspace.tempPath, { force: true });
+}
+
+export async function finalizeJournalWorkspace(
+  workspace: JournalWorkspace,
+  options: FinalizeWorkspaceOptions = {}
+): Promise<string | undefined> {
+  let backupPath: string | undefined;
+
+  if (workspace.journalExists && !options.skipBackup) {
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    backupPath = path.join(workspace.dir, `${workspace.base}.bak-${timestamp}`);
+    await fs.copyFile(workspace.journalPath, backupPath);
+  }
+
+  await fs.rename(workspace.tempPath, workspace.journalPath);
+  return backupPath;
+}
+
+export async function appendTransactionSafely({
+  journalPath,
+  transaction,
+  dryRun = false,
+  skipBackup = false,
+}: AppendTransactionParams): Promise<AppendTransactionResult> {
+  const normalizedTransaction = transaction.trimEnd();
+  const workspace = await createJournalWorkspace(journalPath);
+
   let separator = "";
-  if (journalExists) {
-    separator = await determineSeparator(tempPath);
+  if (workspace.journalExists) {
+    separator = await determineSeparator(workspace.tempPath);
   }
 
   const entry = `${separator}${normalizedTransaction}\n`;
-  await fs.appendFile(tempPath, entry, "utf8");
+  await fs.appendFile(workspace.tempPath, entry, "utf8");
 
   let checkResult: CommandResult;
   try {
-    checkResult = await HLedgerExecutor.execute("check", ["--file", tempPath]);
+    checkResult = await HLedgerExecutor.execute("check", ["--file", workspace.tempPath]);
   } catch (error) {
-    await fs.rm(tempPath, { force: true });
+    await cleanupJournalWorkspace(workspace);
     throw error;
   }
 
   if (dryRun) {
-    await fs.rm(tempPath, { force: true });
+    await cleanupJournalWorkspace(workspace);
     return {
       applied: false,
       journalPath,
@@ -100,16 +144,7 @@ export async function appendTransactionSafely({
     };
   }
 
-  let backupPath: string | undefined;
-  if (journalExists) {
-    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-    if (!skipBackup) {
-      backupPath = path.join(dir, `${base}.bak-${timestamp}`);
-      await fs.copyFile(journalPath, backupPath);
-    }
-  }
-
-  await fs.rename(tempPath, journalPath);
+  const backupPath = await finalizeJournalWorkspace(workspace, { skipBackup });
 
   return {
     applied: true,

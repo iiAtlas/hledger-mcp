@@ -25,7 +25,10 @@ The HLedger MCP server provides comprehensive access to HLedger's financial repo
 - **Descriptions** - Transaction description analysis
 - **Tags** - Query and analyze transaction tags
 - **Files** - Information about journal files
+
+### Journal Updates
 - **Add Transaction** - Append new, validated journal entries with optional dry-run support
+- **Import Transactions** - Safely ingest batches of entries from external journal files or other supported formats
 
 ## Prerequisites
 
@@ -94,6 +97,13 @@ npx hledger-mcp --read-only /path/to/journal.ledger
 ```
 
 Flags may appear before or after the journal path. Both options default to `false`.
+
+### Write tools
+
+When the server is not in `--read-only` mode, two tools can modify the primary journal:
+
+- `hledger_add_transaction` accepts structured postings and appends a new transaction after validating with `hledger check`. Enable `dryRun` to preview the entry without writing.
+- `hledger_import` wraps `hledger import`, running the command against a temporary copy of the journal. Provide one or more `dataFiles` (journal, csv, etc.) and an optional `rulesFile`; set `dryRun` to inspect the diff before committing. Successful imports create timestamped `.bak` files unless `--skip-backup` is active.
 
 ## Example Queries
 
