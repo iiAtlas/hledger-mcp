@@ -1,6 +1,6 @@
 {
   "name": "@iiatlas/hledger-mcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "HLedger MCP server - A Model Context Protocol bridge for HLedger accounting software",
   "keywords": [
     "hledger",
@@ -12,13 +12,13 @@
     "ledger",
     "plain-text-accounting"
   ],
-  "homepage": "https://github.com/anthropics/hledger-mcp#readme",
+  "homepage": "https://github.com/iiAtlas/hledger-mcp#readme",
   "bugs": {
-    "url": "https://github.com/anthropics/hledger-mcp/issues"
+    "url": "https://github.com/iiAtlas/hledger-mcp/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/anthropics/hledger-mcp.git"
+    "url": "git+https://github.com/iiAtlas/hledger-mcp.git"
   },
   "license": "GPL-3.0",
   "author": "Atlas Wegman",

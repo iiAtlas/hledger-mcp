@@ -4,6 +4,8 @@
 
 A Model Context Protocol (MCP) server that provides AI assistants (MCP Clients) with direct access to [HLedger](https://hledger.org/) accounting data and functionality. This server enables AI applications to query account balances, generate financial reports, add new entires, and analyze accounting data through a standardized protocol.
 
+Published on npm as [@iiatlas/hledger-mcp](https://www.npmjs.com/package/@iiatlas/hledger-mcp).
+
 It has support for most `hledger` cli commands, the ability to fetch an traverse `!include`'d journal files, and a safe `--read-only` mode. I hope you find it useful!
 
 ## Features
@@ -77,7 +79,7 @@ Add the following to your Claude Desktop configuration file:
   "mcpServers": {
     "hledger": {
       "command": "npx",
-      "args": ["hledger-mcp", "/path/to/your/master.journal"]
+      "args": ["-y", "@iiatlas/hledger-mcp", "/path/to/your/master.journal"]
     }
   }
 }
@@ -99,7 +101,7 @@ Flags may appear before or after the journal path. Both options default to `fals
   "mcpServers": {
     "hledger": {
       "command": "npx",
-      "args": ["hledger-mcp", "/path/to/your/master.journal", "--read-only"]
+      "args": ["-y", "@iiatlas/hledger-mcp", "/path/to/your/master.journal", "--read-only"]
     }
   }
 }
@@ -110,7 +112,7 @@ Flags may appear before or after the journal path. Both options default to `fals
 For other MCP-compatible applications, run the server with:
 
 ```bash
-npx hledger-mcp /path/to/your/journal.ledger
+npx @iiatlas/hledger-mcp /path/to/your/master.journal
 ```
 
 The server communicates via stdio and expects the journal file path as the first argument.
