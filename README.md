@@ -219,7 +219,7 @@ GPL-3.0 License
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit issues and pull requests.
+See `CONTRIBUTING.md` for setup instructions, coding standards, and tips on testing and debugging changes locally. We welcome issues and pull requests!
 
 ## Related Projects
 
