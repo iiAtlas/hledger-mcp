@@ -20,7 +20,7 @@ const ALLOWED_FLAGS = new Set([
   "ignore-assertions", "strict", "verbose-tags", "pivot", "drop", "declared",
   "no-elide", "format", "layout", "base-url", "output-file", "pretty",
   "commodity-style", "value", "valuechange", "today", "date2", "no-totals", "related",
-  "catchup", "dry-run"
+  "catchup", "dry-run", "add-posting", "diff"
 ]);
 
 export interface ExecuteOptions {

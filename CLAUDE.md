@@ -27,7 +27,7 @@ This is an HLedger MCP (Model Context Protocol) server implementation built with
 - **Transport**: StdioServerTransport for stdio-based communication
 - **Validation**: Zod library for schema validation
 - **Configuration**: Configurable via CLI flags for read/write behaviour
-- **Write Tools**: `hledger_add_transaction` and `hledger_import` both write through temporary copies and optional backups
+- **Write Tools**: `hledger_add_transaction`, `hledger_import`, and `hledger_rewrite` all write through temporary copies with optional backups
 
 ### Server Structure
 The server is configured as:

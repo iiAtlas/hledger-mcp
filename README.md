@@ -29,6 +29,7 @@ The HLedger MCP server provides comprehensive access to HLedger's financial repo
 ### Journal Updates
 - **Add Transaction** - Append new, validated journal entries with optional dry-run support
 - **Import Transactions** - Safely ingest batches of entries from external journal files or other supported formats
+- **Rewrite Transactions** - Add synthesized postings to matching entries using hledger's rewrite command
 
 ## Prerequisites
 
@@ -104,6 +105,7 @@ When the server is not in `--read-only` mode, two tools can modify the primary j
 
 - `hledger_add_transaction` accepts structured postings and appends a new transaction after validating with `hledger check`. Enable `dryRun` to preview the entry without writing.
 - `hledger_import` wraps `hledger import`, running the command against a temporary copy of the journal. Provide one or more `dataFiles` (journal, csv, etc.) and an optional `rulesFile`; set `dryRun` to inspect the diff before committing. Successful imports create timestamped `.bak` files unless `--skip-backup` is active.
+- `hledger_rewrite` runs `hledger rewrite` on a temporary copy, letting you specify one or more `addPostings` instructions for matching transactions. Use `dryRun` for a diff-only preview or `diff: true` to include the patch output alongside the applied change.
 
 ## Example Queries
 
