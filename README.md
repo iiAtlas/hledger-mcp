@@ -63,6 +63,7 @@ The HLedger MCP server provides comprehensive access to HLedger's financial repo
 Add the following to your Claude Desktop configuration file:
 
 **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+
 **Windows**: `%APPDATA%/Claude/claude_desktop_config.json`
 
 ```json
