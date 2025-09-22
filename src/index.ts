@@ -5,6 +5,7 @@ import { AccountsTool } from "./tools/accounts.js";
 import { BalanceTool } from "./tools/balance.js";
 import { PrintTool } from "./tools/print.js";
 import { RegisterTool } from "./tools/register.js";
+import { BalanceSheetTool } from "./tools/balancesheet.js";
 
 // Check if hledger CLI is installed
 function checkHledgerInstallation(): boolean {
@@ -30,6 +31,7 @@ const accountsTool = new AccountsTool(journalFilePath);
 const balanceTool = new BalanceTool(journalFilePath);
 const printTool = new PrintTool(journalFilePath);
 const registerTool = new RegisterTool(journalFilePath);
+const balanceSheetTool = new BalanceSheetTool(journalFilePath);
 
 // Create server instance
 const server = new McpServer({
@@ -84,6 +86,18 @@ server.tool(
   registerTool.metadata.schema.shape,
   async (args) => {
     const result = await registerTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+server.tool(
+  balanceSheetTool.metadata.name,
+  balanceSheetTool.metadata.description,
+  balanceSheetTool.metadata.schema.shape,
+  async (args) => {
+    const result = await balanceSheetTool.execute(args);
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
