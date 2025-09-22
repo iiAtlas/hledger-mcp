@@ -77,7 +77,7 @@ Add the following to your Claude Desktop configuration file:
 }
 ```
 
-Replace `/path/to/your/master.journal` with the actual path to your HLedger journal file. If you have a `master.journal` I'd recommend that, as this tool has support for any other files brought in using HLedgers existing `!include` syntax.
+Replace `/path/to/your/master.journal` with the actual path to your HLedger journal file. If you have a `master.journal` I'd recommend that, as this tool has support for any other files brought in using HLedgers existing `!include` syntax. See [test/resources/master.journal](test/resources/master.journal) for an example journal.
 
 #### Configuration options
 
@@ -172,12 +172,25 @@ npm run debug
 src/
 ├── index.ts              # Main server entry point
 ├── base-tool.ts          # Base tool classes and utilities
+├── executor.ts           # Command execution utilities
+├── journal-writer.ts     # Safe journal writing operations
+├── resource-loader.ts    # MCP resource discovery and loading
 ├── types.ts              # Shared type definitions
 └── tools/                # Individual tool implementations
-    ├── accounts.ts
-    ├── balance.ts
-    ├── register.ts
-    └── ...
+    ├── accounts.ts       # List account names and structures
+    ├── activity.ts       # Account activity analysis
+    ├── add.ts            # Add new transactions
+    ├── balance.ts        # Balance reports
+    └── ...               # ...and many more
+
+test/
+├── resources/            # Test journal files
+│   ├── master.journal    # Example master journal with includes
+│   ├── 01-jan.journal    # Monthly journal files
+│   ├── 02-feb.journal
+│   └── ...
+├── *.test.ts            # Unit tests for tools and utilities
+└── ...
 ```
 
 ## Troubleshooting
