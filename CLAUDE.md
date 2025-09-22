@@ -34,7 +34,7 @@ This is an HLedger MCP (Model Context Protocol) server implementation built with
 The server is configured as:
 - Name: "hledger-mcp"
 - Version: "1.0.0"
-- Capabilities: Currently empty resources and tools objects (ready for extension)
+- Capabilities: tooling plus resource discovery (we call `hledger files` and register every reported ledger as an MCP resource before the transport connects)
 - Transport: Stdio-based communication
 
 The server runs on stdio and logs startup message to stderr to avoid interfering with the MCP protocol communication on stdout.

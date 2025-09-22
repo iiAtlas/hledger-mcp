@@ -20,6 +20,7 @@ import { AddTransactionTool } from "./tools/add.js";
 import { ImportTransactionsTool } from "./tools/import.js";
 import { RewriteTransactionsTool } from "./tools/rewrite.js";
 import { CloseTool } from "./tools/close.js";
+import { registerJournalResources } from "./resource-loader.js";
 
 // Check if hledger CLI is installed
 function checkHledgerInstallation(): boolean {
@@ -335,6 +336,10 @@ async function main() {
     console.error("Error: hledger CLI is not installed or not accessible in PATH");
     console.error("Please install hledger from https://hledger.org/");
     process.exit(1);
+  }
+
+  if (journalFilePath) {
+    await registerJournalResources(server, journalFilePath);
   }
 
   const transport = new StdioServerTransport();

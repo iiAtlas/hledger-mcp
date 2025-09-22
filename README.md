@@ -26,6 +26,9 @@ The HLedger MCP server provides comprehensive access to HLedger's financial repo
 - **Tags** - Query and analyze transaction tags
 - **Notes** - List unique transaction notes and memo fields
 
+### Resource Integration
+- Automatically registers the primary journal and every file reported by `hledger files` as MCP resources so clients can browse and retrieve the source ledgers
+
 ### Journal Updates
 - **Add Transaction** - Append new, validated journal entries with optional dry-run support
 - **Import Transactions** - Safely ingest batches of entries from external journal files or other supported formats
