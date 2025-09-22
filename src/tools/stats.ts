@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { SimpleReportTool, ToolMetadata } from "../base-tool.js";
-import { CommonOptionsSchema, OutputFormatSchema } from "../types.js";
+import { CommonOptionsSchema } from "../types.js";
 
 const StatsInputSchema = CommonOptionsSchema.extend({
   summary: z.boolean().optional().describe("Show only the summary section"),

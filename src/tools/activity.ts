@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { SimpleReportTool, ToolMetadata } from "../base-tool.js";
-import { CommonOptionsSchema, OutputFormatSchema } from "../types.js";
+import { CommonOptionsSchema } from "../types.js";
 
 const ActivityInputSchema = CommonOptionsSchema.extend({
   interval: z.enum(["daily", "weekly", "monthly", "quarterly", "yearly"]).optional().describe("Reporting interval"),

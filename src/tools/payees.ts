@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { SimpleReportTool, ToolMetadata } from "../base-tool.js";
-import { CommonOptionsSchema, OutputFormatSchema } from "../types.js";
+import { CommonOptionsSchema } from "../types.js";
 
 const PayeesInputSchema = CommonOptionsSchema.extend({
   query: z.string().optional().describe("Filter payees using query syntax"),
