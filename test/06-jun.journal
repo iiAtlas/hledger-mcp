@@ -1,0 +1,33 @@
+2025-06-02 * Cloudflare hosting
+  expenses:software:hosting               $4.88
+  assets:bank:checking                   -$4.88
+  project: demo-library-app
+
+2025-06-06 * Apple App Store proceeds
+  assets:bank:checking                    $4.90
+  income:sales:apple                     -$4.90
+
+2025-06-09 * DemoLibraryApp.com domain
+  ; domain renewal, receipt added
+  expenses:software:domains               $11.06
+  equity:owner:contributions             -$11.06
+  project: demo-library-app
+
+2025-06-23 * Squarespace
+  ; Domain demo-short.io (1 year)
+  expenses:software:domains               $60.00
+  equity:owner:contributions             -$60.00
+
+2025-06-25 * Stripe payout
+  ; DemoPaymentApp Payout
+  assets:bank:checking                    $21.67
+  income:sales:stripe                    -$21.67
+  project: demo-payment-app
+
+2025-06-27 * GitHub subscription
+  expenses:software:github                $4.00
+  assets:bank:checking                   -$4.00
+
+2025-06-30 * Reconciled - June 2025
+  ; assets:bank:checking matched statement balance of $103.24
+  ; reconciliation completed Tue Jul  8 09:28:10 EDT 2025

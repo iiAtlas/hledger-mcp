@@ -1,0 +1,31 @@
+2025-09-09 * CGTrader
+  ; 3D mug models
+  expenses:software:assets                $14.24
+  equity:owner:contributions             -$14.24
+  project: demo-project
+
+2025-09-09 * OpenAI ChatGPT Plus subscription
+  expenses:software:openai                $20.00
+  equity:owner:contributions             -$20.00
+
+2025-09-14 * Vercel invoice DEMO-VER-001
+  expenses:software:vercel                $20.00
+  equity:owner:contributions             -$20.00
+  project: demo-project
+
+2025-09-17 * Supabase invoice DEMO-INV-002
+  expenses:software:supabase              $36.13
+  equity:owner:contributions             -$36.13
+  project: demo-project
+
+2025-09-17 * Porkbun domain renewal: demo-business-site.com
+  expenses:software:domains               $11.08
+  equity:owner:contributions             -$11.08
+
+2025-09-18 * Porkbun domain renewal: demo-executive.com
+  expenses:software:domains               $88.05
+  equity:owner:contributions             -$88.05
+
+2025-09-19 * Demo State Registered Agent LLC
+  expenses:legal:compliance               $49.00
+  equity:owner:contributions             -$49.00

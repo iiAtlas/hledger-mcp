@@ -1,0 +1,19 @@
+2025-01-02 * Apple App Store sales
+  assets:bank:checking                    $2.54
+  income:sales:apple                     -$2.54
+
+2025-01-07 * Apple App Store sales
+  assets:bank:checking                    $5.08
+  income:sales:apple                     -$5.08
+
+2025-01-27 * GitHub subscription
+  expenses:software:github                $4.00
+  assets:bank:checking                   -$4.00
+
+2025-01-28 * demo-email-service.com domain
+  expenses:software:domains               $11.82
+  equity:owner:contributions             -$11.82
+
+2025-01-31 * Reconciled - January 2025
+  ; assets:bank:checking matched statement balance of $152.68
+  ; reconciliation completed Tue Apr 22 10:32:26 EDT 2025

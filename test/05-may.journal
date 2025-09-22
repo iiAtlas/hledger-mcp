@@ -1,0 +1,30 @@
+2025-05-01 * Cloudflare hosting
+  expenses:software:hosting               $4.88
+  assets:bank:checking                   -$4.88
+  project: demo-library-app
+
+2025-05-02 * Apple sales
+  assets:bank:checking                    $2.54
+  income:sales:apple                     -$2.54
+
+2025-05-15 * CarAuction Seller Fee - ClassicCar
+  ; ClassicCar seller fee, receipt added 
+  expenses:sales:auctions:fees            $99.00
+  equity:owner:contributions             -$99.00
+
+2025-05-24 * demo-personal-site.com domain renewal (Squarespace)
+  expenses:software:domains               $15.00
+  equity:owner:contributions             -$15.00
+
+2025-05-27 * GitHub subscription
+  expenses:software:github                $4.00
+  assets:bank:checking                   -$4.00
+
+2025-05-31 * Car Paint Thickness Meter (Amazon)
+  ; ClassicCar paint meter for auction, receipt added 
+  expenses:sales:auctions                 $45.67
+  equity:owner:contributions             -$45.67
+
+2025-05-31 * Reconciled - May 2025
+  ; assets:bank:checking matched statement balance of $85.55
+  ; reconciliation completed Mon Jun  2 08:36:37 EDT 2025

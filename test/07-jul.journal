@@ -1,0 +1,31 @@
+2025-07-01 * Cloudflare hosting
+  expenses:software:hosting               $4.88
+  assets:bank:checking                   -$4.88
+  project: demo-library-app
+
+2025-07-02 * demo-playground.com domain
+  ; domain renewal, receipt added
+  expenses:software:domains               $11.84
+  equity:owner:contributions             -$11.84
+
+2025-07-07 * Apple App Store proceeds
+  assets:bank:checking                    $7.62
+  income:sales:apple                     -$7.62
+
+2025-07-09 * OpenAI Credits
+  expenses:software:openai                $5.00
+  assets:bank:checking                   -$5.00
+  project: demo-project
+
+2025-07-14 * Porkbun domain registration: demo-project.ai (2 years)
+  expenses:software:domains               $144.80
+  equity:owner:contributions             -$144.80
+  project: demo-project
+
+2025-07-27 * GitHub subscription
+  expenses:software:github                $4.00
+  assets:bank:checking                   -$4.00
+
+2025-07-31 * Reconciled - July 2025
+  ; assets:bank:checking matched statement balance of $96.98
+  ; reconciliation completed Fri Sep 19 13:16:39 EDT 2025

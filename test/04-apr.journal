@@ -1,0 +1,20 @@
+2025-04-01 * Cloudflare
+  expenses:software:hosting               $4.88
+  assets:bank:checking                   -$4.88
+  project: demo-library-app
+
+2025-04-04 * Apple Inc (ACH In)
+  assets:bank:checking                    $7.61
+  income:sales:apple                     -$7.61
+
+2025-04-08 * DemoMail.com & PalsMail.com domains
+  expenses:software:domains               $23.64
+  equity:owner:contributions             -$23.64
+
+2025-04-27 * GitHub
+  expenses:software:github                $4.00
+  assets:bank:checking                   -$4.00
+
+2025-04-30 * Reconciled - April 2025
+  ; assets:bank:checking matched statement balance of $91.89
+  ; reconciliation completed Wed May 21 09:49:24 EDT 2025

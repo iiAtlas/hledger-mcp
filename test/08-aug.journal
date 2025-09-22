@@ -1,0 +1,36 @@
+2025-08-01 * Apple App Store proceeds
+  assets:bank:checking                    $7.25
+  income:sales:apple                     -$7.25
+
+2025-08-06 * Stripe payout
+  assets:bank:checking                    $5.68
+  income:sales:stripe                    -$5.68
+  project: demo-payment-app
+
+2025-08-15 * OpenAI Credits
+  expenses:software:openai                $10.00
+  assets:bank:checking                   -$10.00
+  project: demo-project
+
+2025-08-17 * Supabase invoice DEMO-INV-001
+  expenses:software:supabase              $27.74
+  equity:owner:contributions             -$27.74
+  project: demo-project
+
+2025-08-22 * Porkbun domain renewal: demo-payment-app.io
+  expenses:software:domains               $46.65
+  equity:owner:contributions             -$46.65
+  project: demo-payment-app
+
+2025-08-26 * Stripe payout
+  assets:bank:checking                    $1.41
+  income:sales:stripe                    -$1.41
+  project: demo-payment-app
+
+2025-08-27 * GitHub subscription
+  expenses:software:github                $4.00
+  assets:bank:checking                   -$4.00
+
+2025-08-31 * Reconciled - August 2025
+  ; assets:bank:checking matched statement balance of $97.32
+  ; reconciliation completed Fri Sep 19 13:18:59 EDT 2025

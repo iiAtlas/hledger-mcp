@@ -1,0 +1,13 @@
+!include opening.journal
+!include 01-jan.journal
+!include 02-feb.journal
+!include 03-mar.journal
+!include 04-apr.journal
+!include 05-may.journal
+!include 06-jun.journal
+!include 07-jul.journal
+!include 08-aug.journal
+!include 09-sep.journal
+; !include 10-oct.journal
+; !include 11-nov.journal
+; !include 12-dec.journal

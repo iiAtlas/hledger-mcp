@@ -1,0 +1,11 @@
+2025-02-05 * iPad Pro Keyboard & Magsafe Case
+  expenses:equipment:accessories          $398.80
+  equity:owner:contributions             -$398.80
+
+2025-02-27 * GitHub subscription
+  expenses:software:github                $4.00
+  assets:bank:checking                   -$4.00
+
+2025-02-28 * Reconciled - February 2025
+  ; assets:bank:checking matched statement balance of $148.68
+  ; reconciliation completed Tue Apr 22 10:32:47 EDT 2025

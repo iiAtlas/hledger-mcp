@@ -1,0 +1,23 @@
+2025-03-04 * Fastmail subscription
+  expenses:software:email                 $38.99
+  assets:bank:checking                   -$38.99
+
+2025-03-07 * App Store sale
+  assets:bank:checking                    $2.47
+  income:sales:apple                     -$2.47
+
+2025-03-07 * Demo State Annual LLC Filing
+  expenses:professional:compliance        $185.00
+  equity:owner:contributions             -$185.00
+
+2025-03-08 * Pragmatic Engineer subscription
+  expenses:education                      $15.00
+  assets:bank:checking                   -$15.00
+
+2025-03-27 * GitHub subscription
+  expenses:software:github                $4.00
+  assets:bank:checking                   -$4.00
+
+2025-03-31 * Reconciled - March 2025
+  ; assets:bank:checking matched statement balance of $93.16
+  ; reconciliation completed Tue Apr 22 10:33:05 EDT 2025
