@@ -45,6 +45,10 @@ The HLedger MCP server provides comprehensive access to HLedger's financial repo
 - **Close Books** - Generate closing/opening, retain-earnings, or assertion transactions and append them safely
 - **Rewrite Transactions** - Add synthesized postings to matching entries using hledger's rewrite command
 
+## Demo
+
+![Summary-Demo](images/summary-demo.gif)
+
 ## Prerequisites
 
 - **HLedger** must be installed and accessible in your system PATH
