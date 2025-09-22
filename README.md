@@ -47,7 +47,13 @@ The HLedger MCP server provides comprehensive access to HLedger's financial repo
 
 ## Demo
 
+A general summary:
+
 ![Summary-Demo](images/summary-demo.gif)
+
+Querying and adding new entries:
+
+![Spend-Demo](images/spend-demo.gif)
 
 ## Prerequisites
 
