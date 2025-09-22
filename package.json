@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc && chmod 755 build/index.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "debug": "npx @modelcontextprotocol/inspector hledger-cli"
+    "debug": "npx @modelcontextprotocol/inspector node"
   },
   "bin": {
     "hledger-mcp": "./build/index.js"
