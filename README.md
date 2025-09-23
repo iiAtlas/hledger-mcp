@@ -47,6 +47,17 @@ The HLedger MCP server provides comprehensive access to HLedger's financial repo
 - **Close Books** - Generate closing/opening, retain-earnings, or assertion transactions and append them safely
 - **Rewrite Transactions** - Add synthesized postings to matching entries using hledger's rewrite command
 
+### Web Interface
+
+You can open up the hledger web UI directly within the MCP server!
+
+- **Start Web** - Launches `hledger web` in the requested mode without blocking the MCP server
+  - _Requires the optional `hledger-web` executable_. If your `hledger` binary does not recognize the `web` command, install `hledger-web` (often a separate package) or point the MCP server at an executable built with web support.
+  - Set `HLEDGER_WEB_EXECUTABLE_PATH` to force the MCP server to use a dedicated binary (such as `hledger-web`) for launching the web interface.
+- **List/Stop Web Instances** - Enumerate all running web servers started during the session, gracefully terminate one or all
+
+Read-only MCP sessions always run the web interface in `view` mode, while write-enabled sessions default to `add` permissions unless `allow: "edit"` is requested explicitly.
+
 ## Demo
 
 A general summary:
@@ -73,7 +84,7 @@ Create artifacts from the journal data:
 
 ### Installing the .mcpb file
 
-The easiest way to install the extension is through the `.mcpb` file provided on [releases](https://github.com/iiAtlas/hledger-mcp/releases).  If you prefer npm, you can use the method below.
+The easiest way to install the extension is through the `.mcpb` file provided on [releases](https://github.com/iiAtlas/hledger-mcp/releases). If you prefer npm, you can use the method below.
 
 ### Installing via NPM
 
@@ -110,7 +121,12 @@ Flags may appear before or after the journal path. Both options default to `fals
   "mcpServers": {
     "hledger": {
       "command": "npx",
-      "args": ["-y", "@iiatlas/hledger-mcp", "/path/to/your/master.journal", "--read-only"]
+      "args": [
+        "-y",
+        "@iiatlas/hledger-mcp",
+        "/path/to/your/master.journal",
+        "--read-only"
+      ]
     }
   }
 }
@@ -123,10 +139,11 @@ MCP clients that prefer configuration via environment variables can set:
 - `HLEDGER_READ_ONLY` &mdash; set to `true` to force read-only mode.
 - `HLEDGER_SKIP_BACKUP` &mdash; set to `true` to disable automatic `.bak` backups.
 - `HLEDGER_EXECUTABLE_PATH` &mdash; (Optional) absolute path to a specific `hledger` binary if it isn't on PATH; overrides auto-detection.
+- `HLEDGER_WEB_EXECUTABLE_PATH` &mdash; (Optional) absolute path to a standalone `hledger web` binary (for example `hledger-web`). When set, the MCP uses this executable instead of running `hledger web` via the primary binary.
 
 The read/write toggles mirror the CLI flags above—CLI arguments take precedence if both are provided.
 
-You can also use environment variables in place of `args` in the json config.  Here is an example:
+You can also use environment variables in place of `args` in the json config. Here is an example:
 
 ```json
 {
@@ -163,6 +180,14 @@ When the server is not in `--read-only` mode, four tools can modify the primary 
 - `hledger_close` produces closing/opening assertions, retain-earnings, or clopen transactions via `hledger close`. Preview the generated entries with `dryRun`, then append them atomically (with optional backups) once you’re satisfied.
 
 All write tools include a `dryRun` parameter to "try it out" before writing.
+
+### Web tools
+
+- `hledger_web` launches the hledger web UI/API on a free port unless a specific port/socket is supplied. The response includes an `instanceId` that can be used to track or terminate the server later.
+- `hledger_web_list` returns metadata for each active web instance started by this MCP session (PID, command, base URL, access mode, etc.).
+- `hledger_web_stop` stops a selected instance by `instanceId`, `pid`, or `port`, or stops everything with `all=true`. You can optionally choose the shutdown signal (`SIGTERM` by default) and timeout.
+
+When the MCP server runs in read-only mode every web instance is forced to `allow: "view"`. Otherwise the server defaults to `allow: "add"` unless `allow: "edit"` is explicitly requested.
 
 ## Example Queries
 
@@ -247,13 +272,27 @@ Ensure HLedger is installed and available in your PATH:
 hledger --version
 ```
 
-The hledger cli path attempts to be found automatically at common location (see [hledger-path.ts:8](src/hledger-path.ts)).  If that's not working, you can set the `HLEDGER_EXECUTABLE_PATH` environment variable to the discrete path.
+The hledger cli path attempts to be found automatically at common location (see [hledger-path.ts:8](src/hledger-path.ts)). If that's not working, you can set the `HLEDGER_EXECUTABLE_PATH` environment variable to the discrete path.
 
 ```bash
 # Find hledger installation path
 which hledger
 ```
 
+### "hledger web command is failing"
+
+Not all instances of hledger include the `hledger-web` binary. Additionaly, some installation methods (like `.mcpb`) have a hard time finding it. If you're struggling to launch the web UI I'd recommend first installing or finding the current installation:
+
+```bash
+# Find hledger-web installation path
+which hledger-web
+```
+
+Then setting that to the environment variable. For my installation via homebrew, that's:
+
+```
+HLEDGER_WEB_EXECUTABLE_PATH=/opt/homebrew/bin/hledger-web
+```
 
 ### "Journal file path is required"
 

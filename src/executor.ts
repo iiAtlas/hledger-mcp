@@ -30,6 +30,7 @@ const ALLOWED_COMMANDS = new Set([
   "close",
   "rewrite",
   "import",
+  "web",
 ]);
 
 // Allowlist of supported flags (without -- prefix)
@@ -87,6 +88,15 @@ const ALLOWED_FLAGS = new Set([
   "format",
   "layout",
   "base-url",
+  "serve",
+  "serve-browse",
+  "serve-api",
+  "allow",
+  "cors",
+  "host",
+  "port",
+  "socket",
+  "test",
   "output-file",
   "pretty",
   "commodity-style",
@@ -134,19 +144,7 @@ export class HLedgerExecutor {
   ): Promise<CommandResult> {
     const startTime = Date.now();
 
-    // Validate command
-    if (!ALLOWED_COMMANDS.has(command)) {
-      throw new HLedgerError(
-        `Command '${command}' is not allowed`,
-        1,
-        `Unsupported command: ${command}`,
-        `hledger ${command}`,
-      );
-    }
-
-    // Validate and sanitize arguments
-    const sanitizedArgs = this.sanitizeArgs(args);
-    const fullCommand = `hledger ${command} ${sanitizedArgs.join(" ")}`;
+    const { sanitizedArgs, fullCommand } = this.prepareCommand(command, args);
 
     // Set up timeout
     const timeout = options.timeout ?? this.DEFAULT_TIMEOUT;
@@ -182,6 +180,29 @@ export class HLedgerExecutor {
 
       throw error;
     }
+  }
+
+  /**
+   * Validate command and sanitize arguments without executing.
+   */
+  static prepareCommand(
+    command: string,
+    args: string[] = [],
+  ): { sanitizedArgs: string[]; fullCommand: string } {
+    if (!ALLOWED_COMMANDS.has(command)) {
+      throw new HLedgerError(
+        `Command '${command}' is not allowed`,
+        1,
+        `Unsupported command: ${command}`,
+        `hledger ${command}`,
+      );
+    }
+
+    const sanitizedArgs = this.sanitizeArgs(args);
+    const commandParts = ["hledger", command, ...sanitizedArgs];
+    const fullCommand = commandParts.join(" ");
+
+    return { sanitizedArgs, fullCommand };
   }
 
   /**

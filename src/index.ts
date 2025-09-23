@@ -22,6 +22,9 @@ import { AddTransactionTool } from "./tools/add.js";
 import { ImportTransactionsTool } from "./tools/import.js";
 import { RewriteTransactionsTool } from "./tools/rewrite.js";
 import { CloseTool } from "./tools/close.js";
+import { WebTool } from "./tools/web.js";
+import { WebListTool } from "./tools/web-list.js";
+import { WebStopTool } from "./tools/web-stop.js";
 import { registerJournalResources } from "./resource-loader.js";
 import { checkHledgerInstallation } from "./hledger-path.js";
 
@@ -32,10 +35,10 @@ let readOnlyMode = false;
 let skipBackup = false;
 
 // Check environment variables first (from MCP config)
-if (process.env.HLEDGER_READ_ONLY === 'true') {
+if (process.env.HLEDGER_READ_ONLY === "true") {
   readOnlyMode = true;
 }
-if (process.env.HLEDGER_SKIP_BACKUP === 'true') {
+if (process.env.HLEDGER_SKIP_BACKUP === "true") {
   skipBackup = true;
 }
 
@@ -56,9 +59,11 @@ for (const arg of cliArgs) {
   }
 }
 
-if (!journalFilePath || journalFilePath.trim() === '') {
+if (!journalFilePath || journalFilePath.trim() === "") {
   console.error("Error: Journal file path is required");
-  console.error("Please configure the journal path in your MCP client settings");
+  console.error(
+    "Please configure the journal path in your MCP client settings",
+  );
   console.error(
     "Usage: hledger-mcp <path-to-journal-file> [--read-only] [--skip-backup]",
   );
@@ -88,6 +93,9 @@ const filesTool = new FilesTool(journalFilePath);
 const statsTool = new StatsTool(journalFilePath);
 const activityTool = new ActivityTool(journalFilePath);
 const notesTool = new NotesTool(journalFilePath);
+const webTool = new WebTool(journalFilePath, { readOnly: readOnlyMode });
+const webListTool = new WebListTool(journalFilePath);
+const webStopTool = new WebStopTool(journalFilePath);
 const addTransactionTool = new AddTransactionTool(journalFilePath, {
   readOnly: readOnlyMode,
   skipBackup,
@@ -290,6 +298,42 @@ server.tool(
   notesTool.metadata.schema.shape,
   async (args) => {
     const result = await notesTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  },
+);
+
+server.tool(
+  webTool.metadata.name,
+  webTool.metadata.description,
+  webTool.metadata.schema.shape,
+  async (args) => {
+    const result = await webTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  },
+);
+
+server.tool(
+  webListTool.metadata.name,
+  webListTool.metadata.description,
+  webListTool.metadata.schema.shape,
+  async (args) => {
+    const result = await webListTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  },
+);
+
+server.tool(
+  webStopTool.metadata.name,
+  webStopTool.metadata.description,
+  webStopTool.metadata.schema.shape,
+  async (args) => {
+    const result = await webStopTool.execute(args);
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
