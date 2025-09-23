@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [1.0.2]
 
 - Added glama.json for Glama MCP server registry
 - Added `.mcpb` packaging assets and scripts for distributing the MCP bundle

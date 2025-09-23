@@ -2,7 +2,7 @@
   "manifest_version": "0.2",
   "name": "@iiatlas/hledger-mcp",
   "display_name": "HLedger MCP Server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Double entry plain text accounting, right in your LLM! This MCP enables comprehensive read, and (optional) write access to your local HLedger accounting journals.",
   "author": {
     "name": "Atlas Wegman",
