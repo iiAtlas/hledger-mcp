@@ -1,7 +1,7 @@
 import { spawn } from "child_process";
 import type { CommandResult } from "./types.js";
 import { HLedgerError, TimeoutError } from "./types.js";
-import { getHledgerPath } from "./index.js";
+import { getHledgerPath } from "./hledger-path.js";
 
 // Allowlist of supported hledger commands
 const ALLOWED_COMMANDS = new Set([
