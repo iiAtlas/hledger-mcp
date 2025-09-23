@@ -100,6 +100,14 @@
       "description": "Start the hledger web interface without blocking the MCP server"
     },
     {
+      "name": "hledger_web_list",
+      "description": "List running hledger web server instances"
+    },
+    {
+      "name": "hledger_web_stop",
+      "description": "Stop one or more hledger web server instances"
+    },
+    {
       "name": "hledger_add_transaction",
       "description": "Add a new transaction to the journal file"
     },

@@ -7,6 +7,13 @@ import { HLedgerExecutor } from "../executor.js";
 import { getHledgerPath } from "../hledger-path.js";
 import type { CommandResult } from "../types.js";
 import { CommonOptionsSchema, FilePathSchema, HLedgerError } from "../types.js";
+import { webProcessRegistry } from "./web-process-registry.js";
+import type {
+  WebAccessLevel,
+  WebReadySignal,
+  WebServeMode,
+  WebServerInfo,
+} from "./web-types.js";
 
 const WebInputSchema = CommonOptionsSchema.extend({
   serveMode: z
@@ -46,27 +53,6 @@ const WebInputSchema = CommonOptionsSchema.extend({
 });
 
 type WebInput = z.infer<typeof WebInputSchema>;
-
-interface WebServerInfo {
-  status: "started";
-  pid: number | null;
-  mode: "serve" | "serve-browse" | "serve-api";
-  host?: string;
-  port?: number;
-  socket?: string;
-  baseUrl?: string;
-  detectedBaseUrl?: string;
-  requestedHost?: string;
-  requestedPort?: number;
-  allocatedPort?: number;
-  allow: "view" | "add" | "edit";
-  requestedAllow?: "view" | "add" | "edit";
-  startupOutput: {
-    stdout: string;
-    stderr: string;
-  };
-  readySignal: "log" | "timeout";
-}
 
 interface WebToolOptions {
   readOnly?: boolean;
@@ -123,7 +109,7 @@ export class WebTool extends BaseTool<typeof WebInputSchema> {
       let stdoutBuffer = "";
       let stderrBuffer = "";
       let settled = false;
-      let readyReason: WebServerInfo["readySignal"] = "timeout";
+      let readyReason: WebReadySignal = "timeout";
 
       const READY_REGEX = /Serving web UI|Application launched|Server running/i;
 
@@ -166,6 +152,13 @@ export class WebTool extends BaseTool<typeof WebInputSchema> {
           },
           readySignal: readyReason,
         };
+
+        const registered = webProcessRegistry.register(
+          child,
+          payload,
+          fullCommand,
+        );
+        payload.instanceId = registered.instanceId;
 
         resolve({
           success: true,
@@ -251,7 +244,7 @@ export class WebTool extends BaseTool<typeof WebInputSchema> {
     input: WebInput,
     overrides: {
       port?: number;
-      allow?: "view" | "add" | "edit";
+      allow?: WebAccessLevel;
     } = {},
   ): string[] {
     const args = this.buildCommonArgs(input);
@@ -292,9 +285,7 @@ export class WebTool extends BaseTool<typeof WebInputSchema> {
     return args;
   }
 
-  private resolveServeMode(
-    mode: WebInput["serveMode"],
-  ): "serve" | "serve-browse" | "serve-api" {
+  private resolveServeMode(mode: WebInput["serveMode"]): WebServeMode {
     return mode ?? "serve";
   }
 
@@ -358,9 +349,7 @@ export class WebTool extends BaseTool<typeof WebInputSchema> {
     });
   }
 
-  private resolveAccessLevel(
-    requested: WebInput["allow"],
-  ): "view" | "add" | "edit" {
+  private resolveAccessLevel(requested: WebInput["allow"]): WebAccessLevel {
     if (this.readOnly) {
       return "view";
     }
