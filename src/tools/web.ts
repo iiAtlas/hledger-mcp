@@ -290,7 +290,7 @@ export class WebTool extends BaseTool<typeof WebInputSchema> {
   }
 
   private extractBaseUrl(output: string): string | undefined {
-    const match = output.match(/https?:\/\/[\w\-\.:]+/i);
+    const match = output.match(/https?:\/\/[\w\-.:]+/i);
     return match ? match[0] : undefined;
   }
 
