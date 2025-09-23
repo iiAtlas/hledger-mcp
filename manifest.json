@@ -96,6 +96,10 @@
       "description": "List unique transaction notes"
     },
     {
+      "name": "hledger_web",
+      "description": "Start the hledger web interface without blocking the MCP server"
+    },
+    {
       "name": "hledger_add_transaction",
       "description": "Add a new transaction to the journal file"
     },

@@ -22,6 +22,7 @@ import { AddTransactionTool } from "./tools/add.js";
 import { ImportTransactionsTool } from "./tools/import.js";
 import { RewriteTransactionsTool } from "./tools/rewrite.js";
 import { CloseTool } from "./tools/close.js";
+import { WebTool } from "./tools/web.js";
 import { registerJournalResources } from "./resource-loader.js";
 import { checkHledgerInstallation } from "./hledger-path.js";
 
@@ -88,6 +89,7 @@ const filesTool = new FilesTool(journalFilePath);
 const statsTool = new StatsTool(journalFilePath);
 const activityTool = new ActivityTool(journalFilePath);
 const notesTool = new NotesTool(journalFilePath);
+const webTool = new WebTool(journalFilePath, { readOnly: readOnlyMode });
 const addTransactionTool = new AddTransactionTool(journalFilePath, {
   readOnly: readOnlyMode,
   skipBackup,
@@ -290,6 +292,18 @@ server.tool(
   notesTool.metadata.schema.shape,
   async (args) => {
     const result = await notesTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  },
+);
+
+server.tool(
+  webTool.metadata.name,
+  webTool.metadata.description,
+  webTool.metadata.schema.shape,
+  async (args) => {
+    const result = await webTool.execute(args);
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
