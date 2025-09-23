@@ -3,6 +3,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { execSync } from "child_process";
+import { existsSync } from "fs";
 import { AccountsTool } from "./tools/accounts.js";
 import { BalanceTool } from "./tools/balance.js";
 import { BalanceSheetEquityTool } from "./tools/balancesheetequity.js";
@@ -24,22 +25,73 @@ import { RewriteTransactionsTool } from "./tools/rewrite.js";
 import { CloseTool } from "./tools/close.js";
 import { registerJournalResources } from "./resource-loader.js";
 
-// Check if hledger CLI is installed
+// Global variable to store the found hledger path
+let hledgerExecutablePath = 'hledger';
+
+// Check if hledger CLI is installed and store the working path
 function checkHledgerInstallation(): boolean {
-  try {
-    execSync("hledger --version", { stdio: "pipe" });
-    return true;
-  } catch {
-    return false;
+  // Check if user specified a custom path via environment variable
+  const customPath = process.env.HLEDGER_EXECUTABLE_PATH;
+  if (customPath && customPath !== '${user_config.hledgerExecutablePath}' && customPath.trim() !== '') {
+    try {
+      execSync(`"${customPath}" --version`, {
+        stdio: "pipe",
+        timeout: 5000,
+      });
+      hledgerExecutablePath = customPath;
+      return true;
+    } catch {
+      // Continue to fallback detection
+    }
   }
+
+  const commonPaths = [
+    'hledger', // Try PATH first
+    '/opt/homebrew/bin/hledger', // Homebrew on Apple Silicon
+    '/usr/local/bin/hledger',    // Homebrew on Intel
+    '/usr/bin/hledger',          // System install
+    '/home/linuxbrew/.linuxbrew/bin/hledger', // Linux Homebrew
+    '~/.local/bin/hledger',      // User install
+    '~/.cabal/bin/hledger',      // Cabal install
+    '~/.stack/bin/hledger'       // Stack install
+  ];
+
+  for (const hledgerPath of commonPaths) {
+    try {
+      execSync(`${hledgerPath} --version`, {
+        stdio: "pipe",
+        timeout: 5000,
+      });
+      hledgerExecutablePath = hledgerPath; // Store the working path
+      return true;
+    } catch {
+      continue;
+    }
+  }
+
+  return false;
 }
 
-// Parse command line arguments
+// Function to get the hledger executable path
+export function getHledgerPath(): string {
+  return hledgerExecutablePath;
+}
+
+// Parse command line arguments and environment variables
 const cliArgs = process.argv.slice(2);
 let journalFilePath: string | undefined;
 let readOnlyMode = false;
 let skipBackup = false;
 
+// Check environment variables first (from MCP config)
+if (process.env.HLEDGER_READ_ONLY === 'true') {
+  readOnlyMode = true;
+}
+if (process.env.HLEDGER_SKIP_BACKUP === 'true') {
+  skipBackup = true;
+}
+
+// Parse command line arguments (CLI flags override env vars)
 for (const arg of cliArgs) {
   if (arg === "--read-only") {
     readOnlyMode = true;
@@ -56,11 +108,19 @@ for (const arg of cliArgs) {
   }
 }
 
-if (!journalFilePath) {
+if (!journalFilePath || journalFilePath.trim() === '') {
   console.error("Error: Journal file path is required");
+  console.error("Please configure the journal path in your MCP client settings");
   console.error(
     "Usage: hledger-mcp <path-to-journal-file> [--read-only] [--skip-backup]",
   );
+  process.exit(1);
+}
+
+// Check if journal file exists
+if (!existsSync(journalFilePath)) {
+  console.error(`Error: Journal file does not exist: ${journalFilePath}`);
+  console.error("Please check the journal path in your MCP client settings");
   process.exit(1);
 }
 
@@ -100,7 +160,7 @@ const closeTool = new CloseTool(journalFilePath, {
 // Create server instance
 const server = new McpServer({
   name: "hledger-mcp",
-  version: "1.0.0",
+  version: "1.0.1",
   capabilities: {
     resources: {},
     tools: {},

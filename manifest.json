@@ -1,0 +1,159 @@
+{
+  "manifest_version": "0.2",
+  "name": "@iiatlas/hledger-mcp",
+  "display_name": "HLedger MCP Server",
+  "version": "1.0.1",
+  "description": "HLedger MCP server - A Model Context Protocol bridge for the HLedger plain-text accounting software",
+  "author": {
+    "name": "Atlas Wegman",
+    "email": "atlas@atlasatlasatlas.com",
+    "url": "https://atlasatlasatlas.com"
+  },
+  "homepage": "https://github.com/iiAtlas/hledger-mcp",
+  "documentation": "https://github.com/iiAtlas/hledger-mcp#README",
+  "support": "https://github.com/iiAtlas/hledger-mcp/issues",
+  "icon": "images/hledger-mcp-icon.jpg",
+  "screenshots": [
+    "images/summary-demo.gif",
+    "images/spend-demo.gif"
+  ],
+  "server": {
+    "type": "node",
+    "entry_point": "build/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/build/index.js",
+        "${user_config.journalPath}"
+      ],
+      "env": {
+        "HLEDGER_READ_ONLY": "${user_config.readOnly}",
+        "HLEDGER_SKIP_BACKUP": "${user_config.skipBackup}",
+        "HLEDGER_EXECUTABLE_PATH": "${user_config.hledgerExecutablePath}"
+      }
+    }
+  },
+  "tools": [
+    {
+      "name": "hledger_accounts",
+      "description": "List account names from the journal"
+    },
+    {
+      "name": "hledger_balance",
+      "description": "Show account balances, balance changes, or other balance-related reports"
+    },
+    {
+      "name": "hledger_print",
+      "description": "Print full transactions from the journal"
+    },
+    {
+      "name": "hledger_register",
+      "description": "Show postings with running totals"
+    },
+    {
+      "name": "hledger_balancesheet",
+      "description": "Summarize assets and liabilities with balance sheet layout"
+    },
+    {
+      "name": "hledger_balancesheetequity",
+      "description": "Balance sheet including equity accounts"
+    },
+    {
+      "name": "hledger_incomestatement",
+      "description": "Income statement summarizing revenues and expenses"
+    },
+    {
+      "name": "hledger_cashflow",
+      "description": "Cash flow statement showing liquidity changes"
+    },
+    {
+      "name": "hledger_payees",
+      "description": "List payee names from the journal"
+    },
+    {
+      "name": "hledger_descriptions",
+      "description": "List transaction descriptions from the journal"
+    },
+    {
+      "name": "hledger_tags",
+      "description": "List tag names used in transactions"
+    },
+    {
+      "name": "hledger_files",
+      "description": "List data files in use by hledger"
+    },
+    {
+      "name": "hledger_stats",
+      "description": "Show journal statistics and health metrics"
+    },
+    {
+      "name": "hledger_activity",
+      "description": "Show posting activity counts as a bar chart"
+    },
+    {
+      "name": "hledger_notes",
+      "description": "List unique transaction notes"
+    },
+    {
+      "name": "hledger_add_transaction",
+      "description": "Add a new transaction to the journal file"
+    },
+    {
+      "name": "hledger_import",
+      "description": "Import transactions from external data files"
+    },
+    {
+      "name": "hledger_rewrite",
+      "description": "Rewrite matching transactions by adding postings"
+    },
+    {
+      "name": "hledger_close",
+      "description": "Generate and optionally append closing/opening transactions"
+    }
+  ],
+  "user_config": {
+    "readOnly": {
+      "type": "boolean",
+      "title": "Read-only mode",
+      "description": "If enabled, disables all write commands so access to your journals remains read-only.",
+      "required": false,
+      "sensitive": false,
+      "default": false
+    },
+    "skipBackup": {
+      "type": "boolean",
+      "title": "Skip write backups",
+      "description": "By default, all write commands create a backup of the journal before writing. If skip backup is enabled, no backup files will be created when writing to the journal files.",
+      "required": false,
+      "sensitive": false,
+      "default": false
+    },
+    "journalPath": {
+      "type": "file",
+      "title": "Journal path",
+      "description": "The path to your main HLedger journal file.",
+      "required": true,
+      "sensitive": false
+    },
+    "hledgerExecutablePath": {
+      "type": "file",
+      "title": "HLedger executable path",
+      "description": "Optional: Specify the full path to the hledger executable. If not set, the server will automatically detect hledger in common installation locations.",
+      "required": false,
+      "sensitive": false
+    }
+  },
+  "keywords": [
+    "plain-text accounting",
+    "finance",
+    "hledger",
+    "ledger",
+    "plaintext",
+    "accounting"
+  ],
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iiAtlas/hledger-mcp"
+  }
+}
