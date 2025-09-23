@@ -117,6 +117,23 @@ MCP clients that prefer configuration via environment variables can set:
 
 The read/write toggles mirror the CLI flags above—CLI arguments take precedence if both are provided.
 
+You can also use environment variables in place of `args` in the json config.  Here is an example:
+
+```json
+{
+  "mcpServers": {
+    "hledger": {
+      "command": "npx",
+      "args": ["-y", "@iiatlas/hledger-mcp", "/path/to/your/master.journal"],
+      "env": {
+        "HLEDGER_READ_ONLY": "true",
+        "HLEDGER_EXECUTABLE_PATH": "/opt/homebrew/bin/hledger"
+      }
+    }
+  }
+}
+```
+
 ### Other MCP Clients
 
 For other MCP-compatible applications, run the server with:
