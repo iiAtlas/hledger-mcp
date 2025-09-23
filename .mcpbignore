@@ -1,0 +1,17 @@
+# Tests and fixtures not needed in the runtime package
+test/
+coverage/
+
+# Local developer configuration
+.claude/
+.nvmrc
+.prettierignore
+
+# Temporary artifacts
+.tmp/
+tmp/
+temp/
+*.tsbuildinfo
+
+# Project metadata not required at runtime
+glama.json
