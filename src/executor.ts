@@ -1,6 +1,7 @@
 import { spawn } from "child_process";
 import type { CommandResult } from "./types.js";
 import { HLedgerError, TimeoutError } from "./types.js";
+import { getHledgerPath } from "./hledger-path.js";
 
 // Allowlist of supported hledger commands
 const ALLOWED_COMMANDS = new Set([
@@ -323,7 +324,8 @@ export class HLedgerExecutor {
     signal: AbortSignal,
   ): Promise<Omit<CommandResult, "command" | "duration">> {
     return new Promise((resolve, reject) => {
-      const child = spawn("hledger", [command, ...args], {
+      const hledgerPath = getHledgerPath();
+      const child = spawn(hledgerPath, [command, ...args], {
         stdio: ["pipe", "pipe", "pipe"],
         signal,
       });
@@ -345,7 +347,7 @@ export class HLedgerExecutor {
             `Failed to spawn hledger: ${error.message}`,
             1,
             error.message,
-            `hledger ${command}`,
+            `${hledgerPath} ${command}`,
           ),
         );
       });

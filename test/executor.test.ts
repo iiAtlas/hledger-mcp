@@ -1,9 +1,11 @@
 import { jest } from "@jest/globals";
 
 const spawnMock = jest.fn();
+const execSyncMock = jest.fn();
 
 jest.unstable_mockModule("child_process", () => ({
   spawn: spawnMock,
+  execSync: execSyncMock,
 }));
 
 const loadExecutor = async () => {
@@ -84,6 +86,7 @@ describe("HLedgerExecutor", () => {
   beforeEach(() => {
     jest.resetModules();
     spawnMock.mockReset();
+    execSyncMock.mockReset();
   });
 
   it("executes allowed command successfully", async () => {

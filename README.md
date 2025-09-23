@@ -107,6 +107,33 @@ Flags may appear before or after the journal path. Both options default to `fals
 }
 ```
 
+#### Environment variables
+
+MCP clients that prefer configuration via environment variables can set:
+
+- `HLEDGER_READ_ONLY` &mdash; set to `true` to force read-only mode.
+- `HLEDGER_SKIP_BACKUP` &mdash; set to `true` to disable automatic `.bak` backups.
+- `HLEDGER_EXECUTABLE_PATH` &mdash; (Optional) absolute path to a specific `hledger` binary if it isn't on PATH; overrides auto-detection.
+
+The read/write toggles mirror the CLI flags above—CLI arguments take precedence if both are provided.
+
+You can also use environment variables in place of `args` in the json config.  Here is an example:
+
+```json
+{
+  "mcpServers": {
+    "hledger": {
+      "command": "npx",
+      "args": ["-y", "@iiatlas/hledger-mcp", "/path/to/your/master.journal"],
+      "env": {
+        "HLEDGER_READ_ONLY": "true",
+        "HLEDGER_EXECUTABLE_PATH": "/opt/homebrew/bin/hledger"
+      }
+    }
+  }
+}
+```
+
 ### Other MCP Clients
 
 For other MCP-compatible applications, run the server with:
@@ -210,6 +237,14 @@ Ensure HLedger is installed and available in your PATH:
 ```bash
 hledger --version
 ```
+
+The hledger cli path attempts to be found automatically at common location (see [hledger-path.ts:8](src/hledger-path.ts)).  If that's not working, you can set the `HLEDGER_EXECUTABLE_PATH` environment variable to the discrete path.
+
+```bash
+# Find hledger installation path
+which hledger
+```
+
 
 ### "Journal file path is required"
 

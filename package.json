@@ -36,7 +36,12 @@
     "lint": "eslint . --ext .ts",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
-    "debug": "npx @modelcontextprotocol/inspector node"
+    "debug": "npx @modelcontextprotocol/inspector node",
+    "mcpb:validate": "npx @anthropic-ai/mcpb validate manifest.json",
+    "mcpb:pack": "npm ci && npm run build && npx @anthropic-ai/mcpb pack . hledger-mcp-v$npm_package_version.mcpb",
+    "mcpb:sign-dev": "npx @anthropic-ai/mcpb sign hledger-mcp-v$npm_package_version.mcpb --self-signed",
+    "mcpb:verify": "npx @anthropic-ai/mcpb verify hledger-mcp-v$npm_package_version.mcpb",
+    "mcpb:info": "npx @anthropic-ai/mcpb info hledger-mcp-v$npm_package_version.mcpb"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.18.1",

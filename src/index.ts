@@ -2,7 +2,7 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { execSync } from "child_process";
+import { existsSync } from "fs";
 import { AccountsTool } from "./tools/accounts.js";
 import { BalanceTool } from "./tools/balance.js";
 import { BalanceSheetEquityTool } from "./tools/balancesheetequity.js";
@@ -23,23 +23,23 @@ import { ImportTransactionsTool } from "./tools/import.js";
 import { RewriteTransactionsTool } from "./tools/rewrite.js";
 import { CloseTool } from "./tools/close.js";
 import { registerJournalResources } from "./resource-loader.js";
+import { checkHledgerInstallation } from "./hledger-path.js";
 
-// Check if hledger CLI is installed
-function checkHledgerInstallation(): boolean {
-  try {
-    execSync("hledger --version", { stdio: "pipe" });
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-// Parse command line arguments
+// Parse command line arguments and environment variables
 const cliArgs = process.argv.slice(2);
 let journalFilePath: string | undefined;
 let readOnlyMode = false;
 let skipBackup = false;
 
+// Check environment variables first (from MCP config)
+if (process.env.HLEDGER_READ_ONLY === 'true') {
+  readOnlyMode = true;
+}
+if (process.env.HLEDGER_SKIP_BACKUP === 'true') {
+  skipBackup = true;
+}
+
+// Parse command line arguments (CLI flags override env vars)
 for (const arg of cliArgs) {
   if (arg === "--read-only") {
     readOnlyMode = true;
@@ -56,11 +56,19 @@ for (const arg of cliArgs) {
   }
 }
 
-if (!journalFilePath) {
+if (!journalFilePath || journalFilePath.trim() === '') {
   console.error("Error: Journal file path is required");
+  console.error("Please configure the journal path in your MCP client settings");
   console.error(
     "Usage: hledger-mcp <path-to-journal-file> [--read-only] [--skip-backup]",
   );
+  process.exit(1);
+}
+
+// Check if journal file exists
+if (!existsSync(journalFilePath)) {
+  console.error(`Error: Journal file does not exist: ${journalFilePath}`);
+  console.error("Please check the journal path in your MCP client settings");
   process.exit(1);
 }
 
@@ -100,7 +108,7 @@ const closeTool = new CloseTool(journalFilePath, {
 // Create server instance
 const server = new McpServer({
   name: "hledger-mcp",
-  version: "1.0.0",
+  version: "1.0.1",
   capabilities: {
     resources: {},
     tools: {},
