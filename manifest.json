@@ -3,7 +3,8 @@
   "name": "@iiatlas/hledger-mcp",
   "display_name": "HLedger MCP Server",
   "version": "1.0.2",
-  "description": "Double entry plain text accounting, right in your LLM! This MCP enables comprehensive read, and (optional) write access to your local HLedger accounting journals.",
+  "description": "Interact with your HLedger accounting journals.",
+  "long_description": "Double entry plain text accounting, right in your LLM! This MCP enables comprehensive read, and (optional) write access to your local HLedger accounting journals.",
   "author": {
     "name": "Atlas Wegman",
     "email": "atlas@atlasatlasatlas.com",
@@ -14,8 +15,8 @@
   "support": "https://github.com/iiAtlas/hledger-mcp/issues",
   "icon": "images/hledger-mcp-icon.jpg",
   "screenshots": [
-    "images/summary-demo.gif",
-    "images/spend-demo.gif"
+    "images/spending-summary-graph.png",
+    "images/spending-summary-static.png"
   ],
   "server": {
     "type": "node",

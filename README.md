@@ -57,6 +57,9 @@ Querying and adding new entries:
 
 ![Spend-Demo](images/spend-demo.gif)
 
+Create artifacts from the journal data:
+![Artifact-Demo](images/spending-summary-graph.png)
+
 ## Prerequisites
 
 - **HLedger** must be installed and accessible in your system PATH
