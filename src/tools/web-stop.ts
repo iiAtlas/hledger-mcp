@@ -9,9 +9,24 @@ const SIGNALS = ["SIGTERM", "SIGINT", "SIGKILL", "SIGQUIT"] as const;
 
 const WebStopInputSchema = z
   .object({
-    instanceId: z.string().min(1).describe("Instance identifier from hledger_web_list").optional(),
-    pid: z.number().int().positive().describe("Process ID of the server").optional(),
-    port: z.number().int().min(1).max(65535).describe("TCP port the server is listening on").optional(),
+    instanceId: z
+      .string()
+      .min(1)
+      .describe("Instance identifier from hledger_web_list")
+      .optional(),
+    pid: z
+      .number()
+      .int()
+      .positive()
+      .describe("Process ID of the server")
+      .optional(),
+    port: z
+      .number()
+      .int()
+      .min(1)
+      .max(65535)
+      .describe("TCP port the server is listening on")
+      .optional(),
     all: z
       .boolean()
       .describe("Stop all running hledger web instances")
@@ -87,13 +102,11 @@ export class WebStopTool extends BaseTool<typeof WebStopInputSchema> {
     signal: (typeof SIGNALS)[number],
     timeoutMs: number,
   ): Promise<
-    Array<
-      {
-        record: WebInstanceRecord;
-        exitCode: number | null;
-        signal: NodeJS.Signals | null;
-      }
-    >
+    Array<{
+      record: WebInstanceRecord;
+      exitCode: number | null;
+      signal: NodeJS.Signals | null;
+    }>
   > {
     if (input.all) {
       const running = webProcessRegistry.list();

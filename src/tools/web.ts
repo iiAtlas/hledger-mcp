@@ -46,10 +46,7 @@ const WebInputSchema = CommonOptionsSchema.extend({
   socket: FilePathSchema.optional().describe(
     "Use a unix socket instead of host/port (unix platforms only)",
   ),
-  baseUrl: z
-    .string()
-    .optional()
-    .describe("Override the reported base URL"),
+  baseUrl: z.string().optional().describe("Override the reported base URL"),
 });
 
 type WebInput = z.infer<typeof WebInputSchema>;
@@ -205,7 +202,8 @@ export class WebTool extends BaseTool<typeof WebInputSchema> {
       const onExit = (code: number | null) => {
         if (settled) return;
         const exitCode = code ?? 1;
-        const message = stderrBuffer.trim() ||
+        const message =
+          stderrBuffer.trim() ||
           stdoutBuffer.trim() ||
           `hledger web exited with code ${exitCode}`;
         rejectWithError(new Error(message));

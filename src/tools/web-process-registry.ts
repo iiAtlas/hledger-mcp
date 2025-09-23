@@ -51,7 +51,11 @@ class WebProcessRegistry {
     instanceId: string,
     signal: NodeJS.Signals = "SIGTERM",
     timeoutMs = 3000,
-  ): Promise<{ record: WebInstanceRecord; exitCode: number | null; signal: NodeJS.Signals | null; }> {
+  ): Promise<{
+    record: WebInstanceRecord;
+    exitCode: number | null;
+    signal: NodeJS.Signals | null;
+  }> {
     const entry = this.instances.get(instanceId);
     if (!entry) {
       throw new Error(`No running hledger web instance with id ${instanceId}`);
@@ -61,7 +65,11 @@ class WebProcessRegistry {
 
     if (child.killed) {
       this.instances.delete(instanceId);
-      return { record, exitCode: child.exitCode ?? null, signal: child.signalCode ?? null };
+      return {
+        record,
+        exitCode: child.exitCode ?? null,
+        signal: child.signalCode ?? null,
+      };
     }
 
     return await new Promise((resolve, reject) => {
@@ -84,7 +92,10 @@ class WebProcessRegistry {
         resolve({ record, exitCode, signal: receivedSignal });
       };
 
-      const onExit = (code: number | null, receivedSignal: NodeJS.Signals | null) => {
+      const onExit = (
+        code: number | null,
+        receivedSignal: NodeJS.Signals | null,
+      ) => {
         resolveResult(code, receivedSignal);
       };
 
@@ -118,7 +129,13 @@ class WebProcessRegistry {
   stopAll(
     signal: NodeJS.Signals = "SIGTERM",
     timeoutMs = 3000,
-  ): Promise<Array<{ record: WebInstanceRecord; exitCode: number | null; signal: NodeJS.Signals | null }>> {
+  ): Promise<
+    Array<{
+      record: WebInstanceRecord;
+      exitCode: number | null;
+      signal: NodeJS.Signals | null;
+    }>
+  > {
     const stopPromises = Array.from(this.instances.keys()).map((instanceId) =>
       this.stopInstance(instanceId, signal, timeoutMs).catch((error) => {
         throw new Error(

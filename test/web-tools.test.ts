@@ -80,12 +80,10 @@ async function registerInstance(
     allocatedPort: overrides.allocatedPort ?? port,
     allow,
     requestedAllow: overrides.requestedAllow ?? allow,
-    startupOutput:
-      overrides.startupOutput ??
-      {
-        stdout: `Serving web UI at http://127.0.0.1:${port}\n`,
-        stderr: "",
-      },
+    startupOutput: overrides.startupOutput ?? {
+      stdout: `Serving web UI at http://127.0.0.1:${port}\n`,
+      stderr: "",
+    },
     readySignal: overrides.readySignal ?? "log",
     instanceId: overrides.instanceId,
   };
@@ -127,9 +125,9 @@ describe("webProcessRegistry", () => {
   it("registers and lists instances, cleaning up on exit", async () => {
     const { instanceId, child } = await registerInstance();
 
-    expect(webProcessRegistry.list().some((i) => i.instanceId === instanceId)).toBe(
-      true,
-    );
+    expect(
+      webProcessRegistry.list().some((i) => i.instanceId === instanceId),
+    ).toBe(true);
 
     child.emitExit(0, "SIGTERM");
 
@@ -146,7 +144,9 @@ describe("webProcessRegistry", () => {
     await new Promise((resolve) => setImmediate(resolve));
 
     expect(
-      webProcessRegistry.list().some((instance) => instance.instanceId === instanceId),
+      webProcessRegistry
+        .list()
+        .some((instance) => instance.instanceId === instanceId),
     ).toBe(false);
   });
 
@@ -180,7 +180,11 @@ describe("webProcessRegistry", () => {
     const child = new FakeChildProcess({ autoExitOnKill: false });
     const { instanceId } = await registerInstance({}, child);
 
-    const promise = webProcessRegistry.stopInstance(instanceId, "SIGTERM", 1000);
+    const promise = webProcessRegistry.stopInstance(
+      instanceId,
+      "SIGTERM",
+      1000,
+    );
 
     child.emitError(new Error("shutdown error"));
 
@@ -237,7 +241,8 @@ describe("web tools", () => {
       expect(Array.isArray(payload.instances)).toBe(true);
       expect(
         payload.instances.some(
-          (instance: { instanceId: string }) => instance.instanceId === instanceId,
+          (instance: { instanceId: string }) =>
+            instance.instanceId === instanceId,
         ),
       ).toBe(true);
     }
@@ -296,7 +301,9 @@ describe("web tools", () => {
     expect(response.success).toBe(true);
     if (response.success) {
       const payload = JSON.parse(response.data);
-      const stoppedIds = payload.stopped.map((entry: { instanceId: string }) => entry.instanceId);
+      const stoppedIds = payload.stopped.map(
+        (entry: { instanceId: string }) => entry.instanceId,
+      );
       expect(stoppedIds).toEqual(
         expect.arrayContaining([first.instanceId, second.instanceId]),
       );
@@ -319,7 +326,9 @@ describe("web tools", () => {
 
     expect(response.success).toBe(false);
     if (!response.success) {
-      expect(response.message).toContain("No running hledger web instance with pid 12345");
+      expect(response.message).toContain(
+        "No running hledger web instance with pid 12345",
+      );
     }
   });
 
@@ -329,13 +338,15 @@ describe("web tools", () => {
 
     expect(response.success).toBe(false);
     if (!response.success) {
-      expect(response.message).toContain("No running hledger web instances to stop");
+      expect(response.message).toContain(
+        "No running hledger web instances to stop",
+      );
     }
   });
 
   it("aggregates errors when stopping all instances", async () => {
     await registerInstance();
-   const failingChild = new FakeChildProcess({ killSucceeds: false });
+    const failingChild = new FakeChildProcess({ killSucceeds: false });
     const { instanceId } = await registerInstance({}, failingChild);
 
     const stopTool = new WebStopTool();
@@ -343,7 +354,9 @@ describe("web tools", () => {
 
     expect(response.success).toBe(false);
     if (!response.success) {
-      expect(response.message).toContain("Encountered errors while stopping instances");
+      expect(response.message).toContain(
+        "Encountered errors while stopping instances",
+      );
       expect(response.message).toContain(instanceId);
     }
   });
@@ -354,7 +367,9 @@ describe("web tools", () => {
 
     expect(response.success).toBe(false);
     if (!response.success) {
-      expect(response.message).toContain("No running hledger web instance on port 54321");
+      expect(response.message).toContain(
+        "No running hledger web instance on port 54321",
+      );
     }
   });
 
@@ -364,7 +379,9 @@ describe("web tools", () => {
 
     expect(response.success).toBe(false);
     if (!response.success) {
-      expect(response.message).toContain("all=true cannot be combined with other selectors");
+      expect(response.message).toContain(
+        "all=true cannot be combined with other selectors",
+      );
     }
   });
 
@@ -374,7 +391,9 @@ describe("web tools", () => {
 
     expect(response.success).toBe(false);
     if (!response.success) {
-      expect(response.message).toContain("Provide only one of instanceId, pid, or port");
+      expect(response.message).toContain(
+        "Provide only one of instanceId, pid, or port",
+      );
     }
   });
 });

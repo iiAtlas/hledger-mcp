@@ -23,10 +23,7 @@
     "entry_point": "build/index.js",
     "mcp_config": {
       "command": "node",
-      "args": [
-        "${__dirname}/build/index.js",
-        "${user_config.journalPath}"
-      ],
+      "args": ["${__dirname}/build/index.js", "${user_config.journalPath}"],
       "env": {
         "HLEDGER_READ_ONLY": "${user_config.readOnly}",
         "HLEDGER_SKIP_BACKUP": "${user_config.skipBackup}",

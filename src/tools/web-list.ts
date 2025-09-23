@@ -20,7 +20,9 @@ export class WebListTool extends BaseTool<typeof WebListInputSchema> {
     return false;
   }
 
-  protected async run(_input: z.infer<typeof WebListInputSchema>): Promise<CommandResult> {
+  protected async run(
+    _input: z.infer<typeof WebListInputSchema>,
+  ): Promise<CommandResult> {
     const start = Date.now();
     const instances = webProcessRegistry.list();
     const stdout = JSON.stringify({ instances }, null, 2);

@@ -35,10 +35,10 @@ let readOnlyMode = false;
 let skipBackup = false;
 
 // Check environment variables first (from MCP config)
-if (process.env.HLEDGER_READ_ONLY === 'true') {
+if (process.env.HLEDGER_READ_ONLY === "true") {
   readOnlyMode = true;
 }
-if (process.env.HLEDGER_SKIP_BACKUP === 'true') {
+if (process.env.HLEDGER_SKIP_BACKUP === "true") {
   skipBackup = true;
 }
 
@@ -59,9 +59,11 @@ for (const arg of cliArgs) {
   }
 }
 
-if (!journalFilePath || journalFilePath.trim() === '') {
+if (!journalFilePath || journalFilePath.trim() === "") {
   console.error("Error: Journal file path is required");
-  console.error("Please configure the journal path in your MCP client settings");
+  console.error(
+    "Please configure the journal path in your MCP client settings",
+  );
   console.error(
     "Usage: hledger-mcp <path-to-journal-file> [--read-only] [--skip-backup]",
   );
