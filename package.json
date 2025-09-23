@@ -41,7 +41,8 @@
     "mcpb:pack": "npm ci && npm run build && npx @anthropic-ai/mcpb pack . hledger-mcp-v$npm_package_version.mcpb",
     "mcpb:sign-dev": "npx @anthropic-ai/mcpb sign hledger-mcp-v$npm_package_version.mcpb --self-signed",
     "mcpb:verify": "npx @anthropic-ai/mcpb verify hledger-mcp-v$npm_package_version.mcpb",
-    "mcpb:info": "npx @anthropic-ai/mcpb info hledger-mcp-v$npm_package_version.mcpb"
+    "mcpb:info": "npx @anthropic-ai/mcpb info hledger-mcp-v$npm_package_version.mcpb",
+    "npm:publish": "npm publish --access public"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.18.1",
