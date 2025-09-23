@@ -2,9 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [1.0.3]
 
 - Added the ability to open/close HLedger web UI instances with three new commands: `hledger_web`, `hledger_web_list` and `hledger_web_stop`
+- Added the `HLEDGER_WEB_EXECUTABLE_PATH` environment variable for setting the `hledger-web` executable path
 
 ## [1.0.2]
 
