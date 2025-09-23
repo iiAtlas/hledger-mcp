@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+- Added glama.json for Glama MCP server registry
+
 ## [1.0.1]
 
 - Update package metadata links to point at the correct GitHub repository.
