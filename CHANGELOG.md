@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+- Added the ability to open/close HLedger web UI instances with three new commands: `hledger_web`, `hledger_web_list` and `hledger_web_stop`
+
 ## [1.0.2]
 
 - Added glama.json for Glama MCP server registry
