@@ -52,7 +52,7 @@ The HLedger MCP server provides comprehensive access to HLedger's financial repo
 You can open up the hledger web UI directly within the MCP server!
 
 - **Start Web** - Launches `hledger web` in the requested mode without blocking the MCP server
-  - *Requires the optional `hledger-web` executable*. If your `hledger` binary does not recognize the `web` command, install `hledger-web` (often a separate package) or point the MCP server at an executable built with web support.
+  - _Requires the optional `hledger-web` executable_. If your `hledger` binary does not recognize the `web` command, install `hledger-web` (often a separate package) or point the MCP server at an executable built with web support.
   - Set `HLEDGER_WEB_EXECUTABLE_PATH` to force the MCP server to use a dedicated binary (such as `hledger-web`) for launching the web interface.
 - **List/Stop Web Instances** - Enumerate all running web servers started during the session, gracefully terminate one or all
 
@@ -281,14 +281,15 @@ which hledger
 
 ### "hledger web command is failing"
 
-Not all instances of hledger include the `hledger-web` binary.  Additionaly, some installation methods (like `.mcpb`) have a hard time finding it.  If you're struggling to launch the web UI I'd recommend first installing or finding the current installation:
+Not all instances of hledger include the `hledger-web` binary. Additionaly, some installation methods (like `.mcpb`) have a hard time finding it. If you're struggling to launch the web UI I'd recommend first installing or finding the current installation:
 
 ```bash
 # Find hledger-web installation path
 which hledger-web
 ```
 
-Then setting that to the environment variable.  For my installation via homebrew, that's:
+Then setting that to the environment variable. For my installation via homebrew, that's:
+
 ```
 HLEDGER_WEB_EXECUTABLE_PATH=/opt/homebrew/bin/hledger-web
 ```
