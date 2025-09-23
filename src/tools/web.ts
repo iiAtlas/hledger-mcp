@@ -51,6 +51,8 @@ const WebInputSchema = CommonOptionsSchema.extend({
 
 type WebInput = z.infer<typeof WebInputSchema>;
 
+const WEB_EXECUTABLE_PLACEHOLDER = "${user_config.hledgerWebExecutablePath}";
+
 interface WebToolOptions {
   readOnly?: boolean;
 }
@@ -94,8 +96,23 @@ export class WebTool extends BaseTool<typeof WebInputSchema> {
     );
     const startTime = Date.now();
     const hledgerPath = getHledgerPath();
+    const rawWebExecutable = process.env.HLEDGER_WEB_EXECUTABLE_PATH;
+    const customWebExecutable =
+      rawWebExecutable &&
+      rawWebExecutable !== WEB_EXECUTABLE_PLACEHOLDER &&
+      rawWebExecutable.trim() !== ""
+        ? rawWebExecutable.trim()
+        : undefined;
+    const hasCustomExecutable = Boolean(customWebExecutable);
+    const commandArgs = hasCustomExecutable
+      ? sanitizedArgs
+      : ["web", ...sanitizedArgs];
+    const executable = hasCustomExecutable ? customWebExecutable! : hledgerPath;
+    const executedCommand = hasCustomExecutable
+      ? [executable, ...commandArgs].join(" ")
+      : fullCommand;
 
-    const child = spawn(hledgerPath, ["web", ...sanitizedArgs], {
+    const child = spawn(executable, commandArgs, {
       stdio: ["ignore", "pipe", "pipe"],
     });
 
@@ -153,7 +170,7 @@ export class WebTool extends BaseTool<typeof WebInputSchema> {
         const registered = webProcessRegistry.register(
           child,
           payload,
-          fullCommand,
+          executedCommand,
         );
         payload.instanceId = registered.instanceId;
 
@@ -162,7 +179,7 @@ export class WebTool extends BaseTool<typeof WebInputSchema> {
           stdout: JSON.stringify(payload, null, 2),
           stderr: stderrBuffer,
           exitCode: 0,
-          command: fullCommand,
+          command: executedCommand,
           duration,
         });
       };
@@ -178,7 +195,7 @@ export class WebTool extends BaseTool<typeof WebInputSchema> {
             error.message,
             child.exitCode ?? 1,
             stderrBuffer || error.message,
-            fullCommand,
+            executedCommand,
           ),
         );
       };
@@ -205,7 +222,7 @@ export class WebTool extends BaseTool<typeof WebInputSchema> {
         const message =
           stderrBuffer.trim() ||
           stdoutBuffer.trim() ||
-          `hledger web exited with code ${exitCode}`;
+          `${executedCommand} exited with code ${exitCode}`;
         rejectWithError(new Error(message));
       };
 

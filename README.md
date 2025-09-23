@@ -52,6 +52,8 @@ The HLedger MCP server provides comprehensive access to HLedger's financial repo
 You can open up the hledger web UI directly within the MCP server!
 
 - **Start Web** - Launches `hledger web` in the requested mode without blocking the MCP server
+  - *Requires the optional `hledger-web` executable*. If your `hledger` binary does not recognize the `web` command, install `hledger-web` (often a separate package) or point the MCP server at an executable built with web support.
+  - Set `HLEDGER_WEB_EXECUTABLE_PATH` to force the MCP server to use a dedicated binary (such as `hledger-web`) for launching the web interface.
 - **List/Stop Web Instances** - Enumerate all running web servers started during the session, gracefully terminate one or all
 
 Read-only MCP sessions always run the web interface in `view` mode, while write-enabled sessions default to `add` permissions unless `allow: "edit"` is requested explicitly.
@@ -137,6 +139,7 @@ MCP clients that prefer configuration via environment variables can set:
 - `HLEDGER_READ_ONLY` &mdash; set to `true` to force read-only mode.
 - `HLEDGER_SKIP_BACKUP` &mdash; set to `true` to disable automatic `.bak` backups.
 - `HLEDGER_EXECUTABLE_PATH` &mdash; (Optional) absolute path to a specific `hledger` binary if it isn't on PATH; overrides auto-detection.
+- `HLEDGER_WEB_EXECUTABLE_PATH` &mdash; (Optional) absolute path to a standalone `hledger web` binary (for example `hledger-web`). When set, the MCP uses this executable instead of running `hledger web` via the primary binary.
 
 The read/write toggles mirror the CLI flags above—CLI arguments take precedence if both are provided.
 
@@ -274,6 +277,20 @@ The hledger cli path attempts to be found automatically at common location (see 
 ```bash
 # Find hledger installation path
 which hledger
+```
+
+### "hledger web command is failing"
+
+Not all instances of hledger include the `hledger-web` binary.  Additionaly, some installation methods (like `.mcpb`) have a hard time finding it.  If you're struggling to launch the web UI I'd recommend first installing or finding the current installation:
+
+```bash
+# Find hledger-web installation path
+which hledger-web
+```
+
+Then setting that to the environment variable.  For my installation via homebrew, that's:
+```
+HLEDGER_WEB_EXECUTABLE_PATH=/opt/homebrew/bin/hledger-web
 ```
 
 ### "Journal file path is required"

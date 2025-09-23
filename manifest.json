@@ -27,7 +27,8 @@
       "env": {
         "HLEDGER_READ_ONLY": "${user_config.readOnly}",
         "HLEDGER_SKIP_BACKUP": "${user_config.skipBackup}",
-        "HLEDGER_EXECUTABLE_PATH": "${user_config.hledgerExecutablePath}"
+        "HLEDGER_EXECUTABLE_PATH": "${user_config.hledgerExecutablePath}",
+        "HLEDGER_WEB_EXECUTABLE_PATH": "${user_config.hledgerWebExecutablePath}"
       }
     }
   },
@@ -149,6 +150,13 @@
       "type": "file",
       "title": "HLedger executable path",
       "description": "Optional: Specify the full path to the hledger executable. If not set, the server will automatically detect hledger in common installation locations.",
+      "required": false,
+      "sensitive": false
+    },
+    "hledgerWebExecutablePath": {
+      "type": "file",
+      "title": "HLedger web executable path",
+      "description": "Optional: Specify a dedicated executable for the hledger web interface (for example the hledger-web binary). If not set, the server runs `hledger web` using the primary executable.",
       "required": false,
       "sensitive": false
     }
