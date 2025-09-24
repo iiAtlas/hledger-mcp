@@ -306,7 +306,7 @@ The server requires a journal file path as an argument. Check your config to mak
 
 ## License
 
-GPL-3.0 License
+MIT License (See [LICENSE](LICENSE))
 
 ## Contributing
 

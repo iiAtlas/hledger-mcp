@@ -20,7 +20,7 @@
     "type": "git",
     "url": "git+https://github.com/iiAtlas/hledger-mcp.git"
   },
-  "license": "GPL-3.0",
+  "license": "MIT",
   "author": "Atlas Wegman",
   "type": "module",
   "main": "index.js",
