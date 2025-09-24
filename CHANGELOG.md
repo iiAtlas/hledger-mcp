@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.4]
+
+- Changed license to MIT. Enjoy!
+
 ## [1.0.3]
 
 - Added the ability to open/close HLedger web UI instances with three new commands: `hledger_web`, `hledger_web_list` and `hledger_web_stop`
