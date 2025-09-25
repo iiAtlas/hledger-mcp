@@ -64,7 +64,11 @@ export class JournalFileEditor {
     let trailingBlankRemoved = false;
     const followingSegment = this.segments[endIndex + 1];
 
-    if (collapseFollowingBlank && followingSegment && isBlank(followingSegment)) {
+    if (
+      collapseFollowingBlank &&
+      followingSegment &&
+      isBlank(followingSegment)
+    ) {
       trailingBlankRemoved = true;
       this.segments.splice(startIndex, removedSegments.length + 1);
     } else {

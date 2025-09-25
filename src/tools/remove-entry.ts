@@ -9,7 +9,10 @@ import {
   cleanupJournalWorkspace,
   finalizeJournalWorkspace,
 } from "../journal-writer.js";
-import { normalizeEntryForComparison, JournalFileEditor } from "../utils/journal-file.js";
+import {
+  normalizeEntryForComparison,
+  JournalFileEditor,
+} from "../utils/journal-file.js";
 import { FilePathSchema, ValidationError } from "../types.js";
 
 const EntryLocationSchema = z.object({

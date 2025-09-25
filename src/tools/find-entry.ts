@@ -60,7 +60,13 @@ export class FindEntryTool extends BaseTool<typeof FindEntryInputSchema> {
     const resolvedTarget = await fs.realpath(targetFile);
     const rootDir = path.dirname(resolvedTarget);
 
-    const args = ["--file", resolvedTarget, "--output-format", "json", "--location"];
+    const args = [
+      "--file",
+      resolvedTarget,
+      "--output-format",
+      "json",
+      "--location",
+    ];
     if (input.query) {
       args.push(...this.parseQuery(input.query));
     }
@@ -92,7 +98,9 @@ export class FindEntryTool extends BaseTool<typeof FindEntryInputSchema> {
         continue;
       }
 
-      const uniquePaths = new Set(entry.tsourcepos.map((pos) => pos.sourceName));
+      const uniquePaths = new Set(
+        entry.tsourcepos.map((pos) => pos.sourceName),
+      );
       if (uniquePaths.size !== 1) {
         throw new ValidationError(
           "Encountered a transaction spanning multiple files, which is not supported",
@@ -135,7 +143,8 @@ export class FindEntryTool extends BaseTool<typeof FindEntryInputSchema> {
         entryText,
         location: {
           absolutePath: resolvedSource,
-          relativePath: files.get(resolvedSource) ?? path.basename(resolvedSource),
+          relativePath:
+            files.get(resolvedSource) ?? path.basename(resolvedSource),
           startLine,
           endLine,
         },

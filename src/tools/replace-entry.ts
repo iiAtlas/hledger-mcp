@@ -23,9 +23,7 @@ const EntryLocationSchema = z.object({
 
 const ReplaceEntryInputSchema = z.object({
   original: z.string().min(1, "Original entry text is required"),
-  replacement: z
-    .string()
-    .min(1, "Replacement entry text is required"),
+  replacement: z.string().min(1, "Replacement entry text is required"),
   location: EntryLocationSchema,
   dryRun: z
     .boolean()
