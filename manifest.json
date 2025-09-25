@@ -46,6 +46,10 @@
       "description": "Print full transactions from the journal"
     },
     {
+      "name": "hledger_find_entry",
+      "description": "Find complete journal entries matching a query"
+    },
+    {
       "name": "hledger_register",
       "description": "Show postings with running totals"
     },
@@ -92,6 +96,14 @@
     {
       "name": "hledger_notes",
       "description": "List unique transaction notes"
+    },
+    {
+      "name": "hledger_remove_entry",
+      "description": "Remove a complete journal entry by exact match"
+    },
+    {
+      "name": "hledger_replace_entry",
+      "description": "Replace a complete journal entry with new content"
     },
     {
       "name": "hledger_web",

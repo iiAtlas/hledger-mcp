@@ -18,9 +18,12 @@ import { FilesTool } from "./tools/files.js";
 import { StatsTool } from "./tools/stats.js";
 import { ActivityTool } from "./tools/activity.js";
 import { NotesTool } from "./tools/notes.js";
+import { FindEntryTool } from "./tools/find-entry.js";
 import { AddTransactionTool } from "./tools/add.js";
 import { ImportTransactionsTool } from "./tools/import.js";
 import { RewriteTransactionsTool } from "./tools/rewrite.js";
+import { RemoveEntryTool } from "./tools/remove-entry.js";
+import { ReplaceEntryTool } from "./tools/replace-entry.js";
 import { CloseTool } from "./tools/close.js";
 import { WebTool } from "./tools/web.js";
 import { WebListTool } from "./tools/web-list.js";
@@ -93,6 +96,7 @@ const filesTool = new FilesTool(journalFilePath);
 const statsTool = new StatsTool(journalFilePath);
 const activityTool = new ActivityTool(journalFilePath);
 const notesTool = new NotesTool(journalFilePath);
+const findEntryTool = new FindEntryTool(journalFilePath);
 const webTool = new WebTool(journalFilePath, { readOnly: readOnlyMode });
 const webListTool = new WebListTool(journalFilePath);
 const webStopTool = new WebStopTool(journalFilePath);
@@ -105,6 +109,14 @@ const importTool = new ImportTransactionsTool(journalFilePath, {
   skipBackup,
 });
 const rewriteTool = new RewriteTransactionsTool(journalFilePath, {
+  readOnly: readOnlyMode,
+  skipBackup,
+});
+const removeEntryTool = new RemoveEntryTool(journalFilePath, {
+  readOnly: readOnlyMode,
+  skipBackup,
+});
+const replaceEntryTool = new ReplaceEntryTool(journalFilePath, {
   readOnly: readOnlyMode,
   skipBackup,
 });
@@ -305,6 +317,18 @@ server.tool(
 );
 
 server.tool(
+  findEntryTool.metadata.name,
+  findEntryTool.metadata.description,
+  findEntryTool.metadata.schema.shape,
+  async (args) => {
+    const result = await findEntryTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  },
+);
+
+server.tool(
   webTool.metadata.name,
   webTool.metadata.description,
   webTool.metadata.schema.shape,
@@ -370,6 +394,30 @@ server.tool(
   rewriteTool.metadata.schema.shape,
   async (args) => {
     const result = await rewriteTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  },
+);
+
+server.tool(
+  removeEntryTool.metadata.name,
+  removeEntryTool.metadata.description,
+  removeEntryTool.metadata.schema.shape,
+  async (args) => {
+    const result = await removeEntryTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  },
+);
+
+server.tool(
+  replaceEntryTool.metadata.name,
+  replaceEntryTool.metadata.description,
+  replaceEntryTool.metadata.schema.shape,
+  async (args) => {
+    const result = await replaceEntryTool.execute(args);
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
