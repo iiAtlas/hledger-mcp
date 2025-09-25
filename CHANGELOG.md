@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+- Added `hledger_find_entry`, `hledger_remove_entry`, and `hledger_replace_entry` tools for locating and editing journal transactions
+
 ## [1.0.4]
 
 - Changed license to MIT. Enjoy!
