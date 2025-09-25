@@ -1,6 +1,6 @@
 {
   "name": "@iiatlas/hledger-mcp",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "HLedger MCP server - A Model Context Protocol bridge for HLedger accounting software",
   "keywords": [
     "hledger",

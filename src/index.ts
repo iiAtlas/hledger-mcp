@@ -128,7 +128,7 @@ const closeTool = new CloseTool(journalFilePath, {
 // Create server instance
 const server = new McpServer({
   name: "hledger-mcp",
-  version: "1.0.4",
+  version: "1.0.5",
   capabilities: {
     resources: {},
     tools: {},

@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [1.0.5]
 
 - Added `hledger_find_entry`, `hledger_remove_entry`, and `hledger_replace_entry` tools for locating and editing journal transactions
 
