@@ -8,6 +8,9 @@ It has support for most `hledger` cli commands, the ability to fetch an traverse
 
 Published on npm as [@iiatlas/hledger-mcp](https://www.npmjs.com/package/@iiatlas/hledger-mcp), and available as an installable `.mcpb` file from [releases](https://github.com/iiAtlas/hledger-mcp/releases).
 
+![GitHub License](https://img.shields.io/github/license/iiatlas/hledger-mcp) ![Static Badge](https://img.shields.io/badge/Ready-claude?logo=claude&logoColor=%23D97757&label=Claude) ![Static Badge](https://img.shields.io/badge/Ready-openai?logo=openai&logoColor=%23fffffff&label=OpenAI) ![GitHub Release](https://img.shields.io/github/v/release/iiatlas/hledger-mcp)
+
+
 ## Features
 
 The HLedger MCP server provides comprehensive access to HLedger's financial reporting capabilities through the following tools:
