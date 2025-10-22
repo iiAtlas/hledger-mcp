@@ -39,6 +39,10 @@ The HLedger MCP server provides comprehensive access to HLedger's financial repo
 - **Notes** - List unique transaction notes and memo fields
 - **Files** - List data files used by hledger
 
+### File Operations
+
+- **Move File** - Move or rename receipt files (PDFs and images only) for organizing documentation. Must be explicitly enabled with `--allow-file-operations` flag.
+
 ### Resource Integration
 
 - Automatically registers the primary journal and every file reported by `hledger files` as MCP resources so clients can browse and retrieve the source ledgers
@@ -119,8 +123,9 @@ You can toggle write behaviour with optional flags:
 
 - `--read-only` &mdash; disables the add-transaction tool entirely; all write attempts return an error.
 - `--skip-backup` &mdash; prevents the server from creating `.bak` files before appending to an existing journal.
+- `--allow-file-operations` &mdash; enables file move and rename operations for PDF and image files (disabled by default for safety).
 
-Flags may appear before or after the journal path. Both options default to `false`. I recommend starting with `--read-only` enabled until you get more comfortable with the tool. Below is that sample config:
+Flags may appear before or after the journal path. All options default to `false`. I recommend starting with `--read-only` enabled until you get more comfortable with the tool. Below is that sample config:
 
 ```json
 {
@@ -144,10 +149,11 @@ MCP clients that prefer configuration via environment variables can set:
 
 - `HLEDGER_READ_ONLY` &mdash; set to `true` to force read-only mode.
 - `HLEDGER_SKIP_BACKUP` &mdash; set to `true` to disable automatic `.bak` backups.
+- `HLEDGER_ALLOW_FILE_OPERATIONS` &mdash; set to `true` to enable file move/rename operations.
 - `HLEDGER_EXECUTABLE_PATH` &mdash; (Optional) absolute path to a specific `hledger` binary if it isn't on PATH; overrides auto-detection.
 - `HLEDGER_WEB_EXECUTABLE_PATH` &mdash; (Optional) absolute path to a standalone `hledger web` binary (for example `hledger-web`). When set, the MCP uses this executable instead of running `hledger web` via the primary binary.
 
-The read/write toggles mirror the CLI flags above—CLI arguments take precedence if both are provided.
+The configuration toggles mirror the CLI flags above—CLI arguments take precedence if both are provided.
 
 You can also use environment variables in place of `args` in the json config. Here is an example:
 
@@ -196,6 +202,19 @@ All write tools include a `dryRun` parameter to "try it out" before writing.
 - `hledger_web_stop` stops a selected instance by `instanceId`, `pid`, or `port`, or stops everything with `all=true`. You can optionally choose the shutdown signal (`SIGTERM` by default) and timeout.
 
 When the MCP server runs in read-only mode every web instance is forced to `allow: "view"`. Otherwise the server defaults to `allow: "add"` unless `allow: "edit"` is explicitly requested.
+
+### File operations
+
+- `hledger_move_file` allows moving and renaming receipt files (PDFs and images only) to help organize documentation. This tool is **disabled by default** and must be explicitly enabled with the `--allow-file-operations` flag for security. Supported file types include:
+  - PDF files (`.pdf`)
+  - Image files (`.jpg`, `.jpeg`, `.png`, `.gif`, `.bmp`, `.webp`, `.tiff`, `.tif`)
+
+The tool validates that:
+- Only allowed file types can be moved
+- File extensions cannot be changed during the move
+- Source files exist before attempting the operation
+- Destination directories are created if needed
+- Optional `overwrite` parameter controls whether existing destination files can be replaced
 
 ## Example Queries
 

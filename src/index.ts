@@ -28,6 +28,7 @@ import { CloseTool } from "./tools/close.js";
 import { WebTool } from "./tools/web.js";
 import { WebListTool } from "./tools/web-list.js";
 import { WebStopTool } from "./tools/web-stop.js";
+import { MoveFileTool } from "./tools/move-file.js";
 import { registerJournalResources } from "./resource-loader.js";
 import { checkHledgerInstallation } from "./hledger-path.js";
 
@@ -36,6 +37,7 @@ const cliArgs = process.argv.slice(2);
 let journalFilePath: string | undefined;
 let readOnlyMode = false;
 let skipBackup = false;
+let allowFileOperations = false;
 
 // Check environment variables first (from MCP config)
 if (process.env.HLEDGER_READ_ONLY === "true") {
@@ -44,6 +46,9 @@ if (process.env.HLEDGER_READ_ONLY === "true") {
 if (process.env.HLEDGER_SKIP_BACKUP === "true") {
   skipBackup = true;
 }
+if (process.env.HLEDGER_ALLOW_FILE_OPERATIONS === "true") {
+  allowFileOperations = true;
+}
 
 // Parse command line arguments (CLI flags override env vars)
 for (const arg of cliArgs) {
@@ -51,12 +56,14 @@ for (const arg of cliArgs) {
     readOnlyMode = true;
   } else if (arg === "--skip-backup") {
     skipBackup = true;
+  } else if (arg === "--allow-file-operations") {
+    allowFileOperations = true;
   } else if (!arg.startsWith("--") && !journalFilePath) {
     journalFilePath = arg;
   } else {
     console.error(`Error: Unrecognized argument '${arg}'`);
     console.error(
-      "Usage: hledger-mcp <path-to-journal-file> [--read-only] [--skip-backup]",
+      "Usage: hledger-mcp <path-to-journal-file> [--read-only] [--skip-backup] [--allow-file-operations]",
     );
     process.exit(1);
   }
@@ -68,7 +75,7 @@ if (!journalFilePath || journalFilePath.trim() === "") {
     "Please configure the journal path in your MCP client settings",
   );
   console.error(
-    "Usage: hledger-mcp <path-to-journal-file> [--read-only] [--skip-backup]",
+    "Usage: hledger-mcp <path-to-journal-file> [--read-only] [--skip-backup] [--allow-file-operations]",
   );
   process.exit(1);
 }
@@ -123,6 +130,9 @@ const replaceEntryTool = new ReplaceEntryTool(journalFilePath, {
 const closeTool = new CloseTool(journalFilePath, {
   readOnly: readOnlyMode,
   skipBackup,
+});
+const moveFileTool = new MoveFileTool(journalFilePath, {
+  allowFileOperations,
 });
 
 // Create server instance
@@ -430,6 +440,18 @@ server.tool(
   closeTool.metadata.schema.shape,
   async (args) => {
     const result = await closeTool.execute(args);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  },
+);
+
+server.tool(
+  moveFileTool.metadata.name,
+  moveFileTool.metadata.description,
+  moveFileTool.metadata.schema.shape,
+  async (args) => {
+    const result = await moveFileTool.execute(args);
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
