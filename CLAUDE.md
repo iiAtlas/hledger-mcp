@@ -33,6 +33,7 @@ This is an HLedger MCP (Model Context Protocol) server implementation built with
 - **Configuration**: Configurable via CLI flags for read/write behaviour
 - **Write Tools**: `hledger_add_transaction`, `hledger_import`, `hledger_rewrite`, `hledger_remove_entry`, `hledger_replace_entry`, and `hledger_close` all write through temporary copies with optional backups
 - **Read Tools**: new commands such as `hledger_notes` extend the reporting surface while reusing query + output-format helpers
+- **File Operations**: `hledger_move_file` allows moving and renaming receipt files (PDFs and images only) when enabled with `--allow-file-operations`
 
 ### Server Structure
 
@@ -49,4 +50,5 @@ The server runs on stdio and logs startup message to stderr to avoid interfering
 
 - `--read-only`: disable the add-transaction tool (all attempts return a validation error). Default: off.
 - `--skip-backup`: skip creating `.bak` files when appending to an existing journal. Default: off.
+- `--allow-file-operations`: enable file move/rename operations for PDF and image files. Default: off (disabled for security).
 - Journal path remains the first non-flag argument; flags can be passed before or after it.
