@@ -4,7 +4,7 @@
 
 A Model Context Protocol (MCP) server that provides AI assistants (MCP Clients) with direct access to [HLedger](https://hledger.org/) accounting data and functionality. This server enables AI applications to query account balances, generate financial reports, add new entires, and analyze accounting data through a standardized protocol.
 
-It has support for most `hledger` cli commands, the ability to fetch an traverse `!include`'d journal files, and a safe `--read-only` mode. I hope you find it useful!
+It has support for most `hledger` cli commands, the ability to fetch an traverse `include`'d journal files, and a safe `--read-only` mode. I hope you find it useful!
 
 Published on npm as [@iiatlas/hledger-mcp](https://www.npmjs.com/package/@iiatlas/hledger-mcp), and available as an installable `.mcpb` file from [releases](https://github.com/iiAtlas/hledger-mcp/releases).
 
@@ -111,7 +111,7 @@ Add the following to your Claude Desktop configuration file:
 }
 ```
 
-Replace `/path/to/your/master.journal` with the actual path to your HLedger journal file. If you have a `master.journal` I'd recommend that, as this tool has support for any other files brought in using HLedgers existing `!include` syntax. See [test/resources/master.journal](test/resources/master.journal) for an example journal.
+Replace `/path/to/your/master.journal` with the actual path to your HLedger journal file. If you have a `master.journal` I'd recommend that, as this tool has support for any other files brought in using HLedgers existing `include` syntax. See [test/resources/master.journal](test/resources/master.journal) for an example journal.
 
 #### Configuration options
 
