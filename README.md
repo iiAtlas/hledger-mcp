@@ -64,6 +64,10 @@ You can open up the hledger web UI directly within the MCP server!
 
 Read-only MCP sessions always run the web interface in `view` mode, while write-enabled sessions default to `add` permissions unless `allow: "edit"` is requested explicitly.
 
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/iiatlas-hledger-mcp).
+
 ## Demo
 
 A general summary:
