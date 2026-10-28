@@ -3,7 +3,7 @@ import { HLedgerExecutor } from "./executor.js";
 import type { CommandResult, OutputFormatSchema } from "./types.js";
 import { CommonOptionsSchema, ValidationError } from "./types.js";
 
-export interface ToolMetadata<TSchema extends z.AnyZodObject> {
+export interface ToolMetadata<TSchema extends z.ZodObject<z.ZodRawShape>> {
   name: string;
   description: string;
   schema: TSchema;
@@ -36,7 +36,7 @@ export type ToolResponse =
   | ToolValidationErrorResponse
   | ToolFailureResponse;
 
-export abstract class BaseTool<TSchema extends z.AnyZodObject> {
+export abstract class BaseTool<TSchema extends z.ZodObject<z.ZodRawShape>> {
   abstract readonly metadata: ToolMetadata<TSchema>;
   protected readonly journalFilePath?: string;
 
@@ -182,7 +182,7 @@ export abstract class BaseTool<TSchema extends z.AnyZodObject> {
  * Base class for simple reporting tools
  */
 export abstract class SimpleReportTool<
-  TSchema extends z.AnyZodObject,
+  TSchema extends z.ZodObject<z.ZodRawShape>,
 > extends BaseTool<TSchema> {
   protected async run(input: z.infer<TSchema>): Promise<CommandResult> {
     const args = this.buildArgs(input);
@@ -197,7 +197,7 @@ export abstract class SimpleReportTool<
  * Base class for tools that support queries
  */
 export abstract class QueryableTool<
-  TSchema extends z.AnyZodObject,
+  TSchema extends z.ZodObject<z.ZodRawShape>,
 > extends SimpleReportTool<TSchema> {
   protected addQueryArgs(args: string[], query?: string): void {
     if (query) {

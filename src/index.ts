@@ -129,10 +129,6 @@ const closeTool = new CloseTool(journalFilePath, {
 const server = new McpServer({
   name: "hledger-mcp",
   version: "1.0.5",
-  capabilities: {
-    resources: {},
-    tools: {},
-  },
 });
 
 // Register tool handlers

@@ -9,7 +9,7 @@ const PostingSchema = z.object({
   account: z.string().min(1, "Account is required"),
   amount: z.string().min(1, "Amount is required").optional(),
   comment: z.string().optional(),
-  tags: z.record(z.string()).optional(),
+  tags: z.record(z.string(), z.string()).optional(),
 });
 
 const AddTransactionInputSchema = z.object({
